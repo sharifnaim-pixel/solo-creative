@@ -1,0 +1,1270 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AI Solo Creative Agency</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800&family=Readex+Pro:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: each slide is a print artboard on a grey pasteboard, with crop marks and a CMYK colour bar.
+   Level colours follow the print inks: P0 magenta (brand), P1 cyan (campaign), P2 yellow (specialisation), key = shared topics. */
+:root{
+  --paper:#EEF1F5; --surface:#FFFFFF; --ink:#151A28; --muted:#586078; --line:#D3D9E3;
+  --m:#D81B6A; --c:#0889C2; --y:#F0B000;
+  --m-ink:#B5125A; --c-ink:#066E9C; --y-ink:#8A6200;
+  --font-display:"Alexandria","Readex Pro",Tahoma,"Segoe UI",sans-serif;
+  --font-body:"Readex Pro","Segoe UI",Tahoma,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E121C; --surface:#171D2B; --ink:#E8EBF2; --muted:#9AA2B7; --line:#2B3347;
+    --m:#FF4D94; --c:#2FB2EB; --y:#FFC633; --m-ink:#FF7DB2; --c-ink:#71CDF3; --y-ink:#FFD45E;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E121C; --surface:#171D2B; --ink:#E8EBF2; --muted:#9AA2B7; --line:#2B3347;
+  --m:#FF4D94; --c:#2FB2EB; --y:#FFC633; --m-ink:#FF7DB2; --c-ink:#71CDF3; --y-ink:#FFD45E;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-font-smoothing:antialiased;
+}
+.app{height:100%;display:flex;flex-direction:column}
+.viewport{flex:1;min-height:0;container-type:size;display:grid;place-items:center;padding-block:14px 6px}
+.stage{
+  position:relative; width:min(100cqw, calc(100cqh * 16 / 9)); aspect-ratio:16/9; max-width:100%;
+  background:var(--surface); container-type:size;
+  box-shadow:0 0 0 1px var(--line), 0 24px 60px -30px color-mix(in srgb,var(--ink) 45%,transparent);
+  --t-giant:10.5cqw; --t-hero:5.2cqw; --t-h1:3cqw; --t-h2:1.85cqw; --t-lg:1.5cqw; --t-body:1.28cqw; --t-sm:1.1cqw; --t-xs:.95cqw;
+  --pad-x:4.2cqw; --pad-t:3.2cqw; --pad-b:5cqw; --gap:1.6cqw; --gap-s:.8cqw;
+}
+
+/* ---------- slide ---------- */
+.slide{
+  position:absolute; inset:0; padding:var(--pad-t) var(--pad-x) var(--pad-b);
+  display:flex; flex-direction:column; gap:var(--gap);
+  opacity:0; visibility:hidden; transition:opacity .35s ease, visibility 0s linear .35s; overflow:hidden;
+  --lv:var(--ink); --lv-ink:var(--ink);
+}
+.slide.is-active{opacity:1;visibility:visible;transition:opacity .35s ease}
+.slide[data-level="p0"]{--lv:var(--m);--lv-ink:var(--m-ink)}
+.slide[data-level="p1"]{--lv:var(--c);--lv-ink:var(--c-ink)}
+.slide[data-level="p2"]{--lv:var(--y);--lv-ink:var(--y-ink)}
+.slide{--lv-tint:color-mix(in srgb,var(--lv) 13%,var(--surface))}
+@media (prefers-reduced-motion: reduce){.slide,.slide.is-active{transition:none}}
+
+.marks i{position:absolute;width:1.5cqw;height:1.5cqw;border-color:color-mix(in srgb,var(--muted) 60%,transparent);border-style:solid;border-width:0}
+.marks i:nth-child(1){top:1.1cqw;right:1.1cqw;border-top-width:1px;border-right-width:1px}
+.marks i:nth-child(2){top:1.1cqw;left:1.1cqw;border-top-width:1px;border-left-width:1px}
+.marks i:nth-child(3){bottom:1.1cqw;right:1.1cqw;border-bottom-width:1px;border-right-width:1px}
+.marks i:nth-child(4){bottom:1.1cqw;left:1.1cqw;border-bottom-width:1px;border-left-width:1px}
+
+.s-foot{position:absolute;right:var(--pad-x);left:var(--pad-x);bottom:1.7cqw;display:flex;justify-content:space-between;align-items:center;font-size:var(--t-xs);color:var(--muted);gap:2cqw}
+.s-foot .who{display:flex;align-items:center;gap:1cqw}
+.cmyk{display:inline-flex;gap:2px}
+.cmyk b{width:.75cqw;height:.75cqw;display:block;opacity:.28}
+.cmyk b:nth-child(1){background:var(--c)} .cmyk b:nth-child(2){background:var(--m)} .cmyk b:nth-child(3){background:var(--y)} .cmyk b:nth-child(4){background:var(--ink)}
+.slide[data-level="p1"] .cmyk b:nth-child(1),.slide[data-level="p0"] .cmyk b:nth-child(2),.slide[data-level="p2"] .cmyk b:nth-child(3),.slide[data-level="k"] .cmyk b:nth-child(4){opacity:1}
+.s-foot .num{font-variant-numeric:tabular-nums;direction:ltr}
+
+/* ---------- type ---------- */
+h1,h2,h3,p{margin:0}
+.tag{display:inline-flex;align-items:center;gap:.6cqw;font-size:var(--t-sm);font-weight:500;color:var(--lv-ink)}
+.tag::before{content:"";width:.85cqw;height:.85cqw;background:var(--lv);flex:none}
+.slide[data-level="k"] .tag::before{background:var(--ink)}
+h2{font-family:var(--font-display);font-size:var(--t-h1);font-weight:700;line-height:1.25;text-wrap:balance;letter-spacing:-.005em}
+h3{font-family:var(--font-display);font-size:var(--t-lg);font-weight:600;line-height:1.35}
+.s-head{display:flex;flex-direction:column;gap:.55cqw}
+.s-head p{font-size:var(--t-body);color:var(--muted);max-width:70ch;line-height:1.6}
+.en{direction:ltr;unicode-bidi:isolate}
+.muted{color:var(--muted)}
+.lead{font-size:var(--t-lg);line-height:1.65;max-width:42ch}
+.small{font-size:var(--t-sm);line-height:1.6}
+.xs{font-size:var(--t-xs);line-height:1.55}
+.note{font-size:var(--t-xs);color:var(--muted);line-height:1.6}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- layout helpers ---------- */
+.s-body{flex:1;min-height:0;display:grid;gap:var(--gap);align-content:start}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3cqw}
+.row2.wide-r{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw}
+.stack{display:flex;flex-direction:column;gap:var(--gap-s);min-width:0}
+.stack.lg{gap:var(--gap)}
+.panel{background:var(--paper);padding:1.3cqw 1.5cqw;display:flex;flex-direction:column;gap:.6cqw;min-width:0}
+.panel h3{font-size:var(--t-body)}
+
+/* ---------- divider (level / topic opener) ---------- */
+.divider{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:3.2cqw;align-items:center;flex:1;min-height:0}
+.lv-code{font-family:var(--font-display);font-size:var(--t-giant);font-weight:800;line-height:.9;color:var(--lv);direction:ltr;text-align:right;letter-spacing:-.03em}
+.slide[data-level="k"] .lv-code{color:var(--ink)}
+.d-title{font-family:var(--font-display);font-size:var(--t-hero);font-weight:700;line-height:1.15;text-wrap:balance}
+.d-en{font-size:var(--t-body);color:var(--muted)}
+.meta{display:flex;gap:2.6cqw;flex-wrap:wrap}
+.meta div{display:flex;flex-direction:column;gap:.15cqw}
+.meta strong{font-family:var(--font-display);font-size:var(--t-h2);font-weight:700;font-variant-numeric:tabular-nums}
+.meta span{font-size:var(--t-xs);color:var(--muted)}
+.olist{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45cqw 2cqw;font-size:var(--t-sm);line-height:1.5}
+.olist li{display:flex;gap:.7cqw;align-items:baseline}
+.olist li::before{content:"";width:.6cqw;height:.6cqw;background:var(--lv);flex:none;transform:translateY(-.15cqw)}
+.slide[data-level="k"] .olist li::before{background:var(--ink)}
+.olist.one{grid-template-columns:1fr}
+
+.art{margin:0;background:var(--paper);padding:1.4cqw;display:flex;flex-direction:column;gap:.8cqw;min-width:0;position:relative}
+.art svg{width:100%;height:auto;max-height:64cqh;display:block}
+.art figcaption{display:flex;justify-content:space-between;gap:1cqw;font-size:var(--t-xs);color:var(--muted)}
+.art figcaption b{color:var(--ink);font-weight:600}
+.art::before,.art::after{content:"";position:absolute;width:1cqw;height:1cqw;border:0 solid var(--lv)}
+.art::before{top:-.5cqw;right:-.5cqw;border-top-width:2px;border-right-width:2px}
+.art::after{bottom:-.5cqw;left:-.5cqw;border-bottom-width:2px;border-left-width:2px}
+.slide[data-level="k"] .art::before,.slide[data-level="k"] .art::after{border-color:var(--ink)}
+
+/* ---------- svg palette ---------- */
+svg text{font-family:var(--font-body)}
+.fs{fill:var(--surface)} .fp{fill:var(--paper)} .fi{fill:var(--ink)} .fmu{fill:var(--muted)} .fl{fill:var(--line)}
+.fm{fill:var(--m)} .fc{fill:var(--c)} .fy{fill:var(--y)}
+.tm{fill:color-mix(in srgb,var(--m) 20%,var(--surface))} .tc{fill:color-mix(in srgb,var(--c) 20%,var(--surface))} .ty{fill:color-mix(in srgb,var(--y) 26%,var(--surface))}
+.st{stroke:var(--line);stroke-width:1.5} .nf{fill:none}
+.sk-c{stroke:var(--c)} .sk-m{stroke:var(--m)} .sk-i{stroke:var(--ink)}
+.disp{font-family:var(--font-display);font-weight:700}
+
+/* ---------- course table ---------- */
+.ctable{display:grid;grid-template-columns:auto minmax(0,1.55fr) minmax(0,.9fr) auto minmax(0,1.9fr);column-gap:1.4cqw;align-items:center;font-size:var(--t-sm)}
+.ctable > div{display:contents}
+.ctable > div > *{padding-block:.5cqw;border-bottom:1px solid var(--line);min-width:0;line-height:1.4}
+.ctable .hd > *{font-size:var(--t-xs);color:var(--muted);padding-block:.3cqw .45cqw}
+.ctable .tot > *{border-bottom:0;font-weight:600;padding-top:.7cqw}
+.code{font-weight:600;color:var(--lv-ink);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cname{display:flex;flex-direction:column}
+.cname .en{font-weight:500}
+.cname .ar{font-size:var(--t-xs);color:var(--muted)}
+.hrs{font-weight:600;font-variant-numeric:tabular-nums;text-align:left;white-space:nowrap}
+.out{font-size:var(--t-xs);color:var(--muted)}
+.new{display:inline-block;font-size:.8em;font-weight:600;color:var(--lv-ink);background:var(--lv-tint);padding:0 .5em;margin-inline-start:.4em;vertical-align:.1em}
+.bar{height:.95cqw;background:var(--paper);display:block;position:relative}
+.bar i{position:absolute;inset-block:0;right:0;width:var(--w);display:flex}
+.bar i b{display:block;height:100%}
+.bar i b.th{width:var(--t);background:repeating-linear-gradient(-45deg,var(--lv) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--lv)}
+.bar i b.pr{flex:1;background:var(--lv)}
+.legend{display:flex;gap:1.8cqw;font-size:var(--t-xs);color:var(--muted);align-items:center;flex-wrap:wrap}
+.legend span{display:inline-flex;gap:.5cqw;align-items:center}
+.sw{width:1.6cqw;height:.85cqw;display:inline-block;background:var(--lv)}
+.sw.th{background:repeating-linear-gradient(-45deg,var(--lv) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--lv)}
+
+/* ---------- week grid ---------- */
+.weeks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:.6cqw;flex:1;min-height:0}
+.wk{background:var(--paper);padding:.75cqw 1cqw;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.9cqw;row-gap:.15cqw;align-content:start;position:relative;min-width:0}
+.wk .n{grid-row:span 3;font-family:var(--font-display);font-size:var(--t-h2);font-weight:700;color:var(--lv-ink);line-height:1;font-variant-numeric:tabular-nums;min-width:2.2cqw}
+.wk .f{font-weight:600;font-size:var(--t-sm);line-height:1.35}
+.wk .o{font-size:var(--t-xs);color:var(--ink);opacity:.8;line-height:1.4}
+.wk .a{font-size:var(--t-xs);color:var(--lv-ink);line-height:1.4}
+.wk .g{position:absolute;top:.6cqw;left:.6cqw;font-size:var(--t-xs);font-weight:600;background:var(--ink);color:var(--surface);padding:.05cqw .55cqw;direction:ltr}
+.wk.hl{background:var(--lv-tint)}
+
+/* ---------- generic bar lists ---------- */
+.hbars{display:flex;flex-direction:column;gap:.75cqw}
+.hb{display:grid;grid-template-columns:minmax(0,11cqw) minmax(0,1fr) 3.4cqw;gap:1cqw;align-items:center;font-size:var(--t-sm)}
+.hb .track{height:1.1cqw;background:var(--paper);position:relative}
+.hb .track i{position:absolute;inset-block:0;right:0;width:var(--w);background:var(--lv)}
+.hb .v{font-variant-numeric:tabular-nums;font-weight:600;text-align:left}
+.stackbar{display:flex;height:2.4cqw;width:100%}
+.stackbar span{display:flex;align-items:center;justify-content:center;font-size:var(--t-xs);font-weight:600;color:var(--surface);overflow:hidden;white-space:nowrap}
+
+.tablelite{width:100%;border-collapse:collapse;font-size:var(--t-sm)}
+.tablelite th{font-size:var(--t-xs);color:var(--muted);font-weight:400;text-align:right;padding:.3cqw .6cqw .5cqw;border-bottom:1px solid var(--line)}
+.tablelite td{padding:.6cqw;border-bottom:1px solid var(--line);vertical-align:middle}
+.tablelite td.n,.tablelite th.n{text-align:left;font-variant-numeric:tabular-nums}
+.tablelite tr.tot td{font-weight:600;border-bottom:0}
+
+.chips{display:flex;flex-wrap:wrap;gap:.45cqw}
+.chip{font-size:var(--t-xs);padding:.2cqw .7cqw;background:var(--surface);border:1px solid var(--line);line-height:1.6;direction:ltr;unicode-bidi:isolate}
+.chip.ar{direction:rtl}
+.chip.k{background:var(--lv-tint);border-color:transparent;color:var(--ink)}
+
+.lvl-p0{--lv:var(--m);--lv-ink:var(--m-ink)} .lvl-p1{--lv:var(--c);--lv-ink:var(--c-ink)} .lvl-p2{--lv:var(--y);--lv-ink:var(--y-ink)}
+.lvl-p0,.lvl-p1,.lvl-p2{--lv-tint:color-mix(in srgb,var(--lv) 13%,var(--surface))}
+
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;counter-reset:s}
+.steps li{display:grid;grid-template-columns:3.2cqw minmax(0,1fr);gap:1cqw;padding-block:.8cqw;border-bottom:1px solid var(--line);align-items:start}
+.steps li:last-child{border-bottom:0}
+.steps .k{font-family:var(--font-display);font-weight:700;font-size:var(--t-lg);color:var(--lv-ink);direction:ltr;line-height:1.1}
+.steps .t{display:flex;flex-direction:column;gap:.15cqw;font-size:var(--t-sm);line-height:1.5}
+.steps .t b{font-weight:600}
+
+.calc{display:flex;flex-wrap:wrap;align-items:stretch;gap:.6cqw;direction:rtl}
+.calc .cell{background:var(--paper);padding:.8cqw 1.1cqw;display:flex;flex-direction:column;gap:.1cqw;min-width:0}
+.calc .cell b{font-family:var(--font-display);font-size:var(--t-h2);font-weight:700;font-variant-numeric:tabular-nums;direction:ltr;text-align:right}
+.calc .cell span{font-size:var(--t-xs);color:var(--muted)}
+.calc .op{align-self:center;font-size:var(--t-lg);color:var(--muted);font-weight:600}
+.calc .cell.res{background:var(--lv-tint)}
+
+.journey{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:0;row-gap:.6cqw}
+.journey .gate{grid-row:1;justify-self:end;display:flex;flex-direction:column;align-items:center;gap:.2cqw;transform:translateX(-50%);font-size:var(--t-xs);font-weight:600;direction:ltr}
+.journey .gate::after{content:"";width:.9cqw;height:.9cqw;background:var(--ink);transform:rotate(45deg)}
+.journey .band{grid-row:2;height:4.4cqw;display:flex;flex-direction:column;justify-content:center;padding-inline:1cqw;color:var(--ink);font-size:var(--t-xs);gap:.1cqw}
+.journey .band b{font-family:var(--font-display);font-size:var(--t-body);font-weight:700}
+.journey .band.p0{grid-column:1 / span 4;background:color-mix(in srgb,var(--m) 22%,var(--surface));box-shadow:inset 0 -3px 0 var(--m)}
+.journey .band.p1{grid-column:5 / span 4;background:color-mix(in srgb,var(--c) 22%,var(--surface));box-shadow:inset 0 -3px 0 var(--c)}
+.journey .band.p2{grid-column:9 / span 4;background:color-mix(in srgb,var(--y) 28%,var(--surface));box-shadow:inset 0 -3px 0 var(--y)}
+.journey .mo{grid-row:3;font-size:var(--t-xs);color:var(--muted);text-align:center;border-inline-start:1px solid var(--line);font-variant-numeric:tabular-nums}
+
+.check{display:inline-flex;align-items:center;gap:.5cqw;font-size:var(--t-xs);font-weight:600;padding:.1cqw .6cqw}
+.check.ok{background:color-mix(in srgb,var(--c) 16%,var(--surface));color:var(--c-ink)}
+.check.wait{background:color-mix(in srgb,var(--y) 22%,var(--surface));color:var(--y-ink)}
+
+.cover{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:3cqw;flex:1;align-items:center}
+.cover h1{font-family:var(--font-display);font-size:6.2cqw;font-weight:800;line-height:1;direction:ltr;text-align:right;letter-spacing:-.025em}
+.cover .ar-t{font-family:var(--font-display);font-size:var(--t-h1);font-weight:600;line-height:1.3;margin-top:1.2cqw}
+.cover .sub{font-size:var(--t-lg);color:var(--muted);margin-top:1cqw;max-width:40ch;line-height:1.6}
+.cover .brand{font-size:var(--t-sm);font-weight:600;letter-spacing:.14em;direction:ltr;text-align:right}
+.lvtiles{display:flex;flex-direction:column;gap:.8cqw}
+.lvtile{display:grid;grid-template-columns:7cqw minmax(0,1fr);align-items:center;gap:1.4cqw;padding:1.1cqw 1.3cqw;background:var(--paper);position:relative}
+.lvtile .c{font-family:var(--font-display);font-size:4cqw;font-weight:800;line-height:1;color:var(--lv);direction:ltr;text-align:center}
+.lvtile b{font-family:var(--font-display);font-size:var(--t-lg);font-weight:600;display:block}
+.lvtile span{font-size:var(--t-xs);color:var(--muted)}
+.regmark{position:absolute;left:var(--pad-x);top:var(--pad-t);width:4cqw;height:4cqw}
+
+/* ---------- controls ---------- */
+.controls{display:flex;align-items:center;gap:12px;padding-block:6px 12px;font-size:13px;color:var(--muted)}
+.controls button{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);height:34px;min-width:34px;padding:0 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.controls button:hover{border-color:var(--muted)}
+.controls button:focus-visible,.segs button:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.controls svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.segs{flex:1;display:flex;gap:3px;align-items:flex-end;height:20px;min-width:0}
+.segs button{flex:1;height:8px;min-width:0;padding:0;border:0;background:var(--line);cursor:pointer}
+.segs button[data-l="p0"]{background:color-mix(in srgb,var(--m) 35%,var(--line))}
+.segs button[data-l="p1"]{background:color-mix(in srgb,var(--c) 35%,var(--line))}
+.segs button[data-l="p2"]{background:color-mix(in srgb,var(--y) 40%,var(--line))}
+.segs button.on{height:16px}
+.segs button.on[data-l="p0"]{background:var(--m)} .segs button.on[data-l="p1"]{background:var(--c)} .segs button.on[data-l="p2"]{background:var(--y)} .segs button.on[data-l="k"]{background:var(--ink)}
+#count{font-variant-numeric:tabular-nums;direction:ltr;min-width:52px;text-align:center}
+
+/* ---------- phone: stacked reading mode ---------- */
+@media (max-width: 820px){
+  html,body{height:auto}
+  .app{height:auto;display:block}
+  .viewport{display:block;container-type:normal;padding-block:16px}
+  .stage{width:auto;aspect-ratio:auto;container-type:normal;background:transparent;box-shadow:none;
+    --t-giant:60px;--t-hero:30px;--t-h1:23px;--t-h2:19px;--t-lg:17px;--t-body:15px;--t-sm:14px;--t-xs:12.5px;
+    --pad-x:18px;--pad-t:26px;--pad-b:52px;--gap:16px;--gap-s:10px}
+  .slide{position:relative;inset:auto;opacity:1;visibility:visible;background:var(--surface);margin-bottom:14px;overflow:visible;transition:none;box-shadow:0 0 0 1px var(--line)}
+  .s-foot{bottom:16px}
+  .marks{display:none}
+  .divider,.row2,.row2.wide-r,.row3,.cover{grid-template-columns:minmax(0,1fr)}
+  .weeks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .olist{grid-template-columns:minmax(0,1fr)}
+  .scroll{overflow-x:auto}
+  .scroll > .ctable{min-width:640px}
+  .cover h1{font-size:44px}
+  .lvtile{grid-template-columns:56px minmax(0,1fr)}
+  .lvtile .c{font-size:34px}
+  .regmark{display:none}
+  .art svg{max-height:none}
+  .hb{grid-template-columns:minmax(0,110px) minmax(0,1fr) 40px}
+  .bar{height:8px} .sw{width:16px;height:8px} .tag::before{width:8px;height:8px} .olist li::before{width:6px;height:6px}
+  .wk .n{min-width:22px} .journey .band{height:auto;padding-block:8px}
+  .stackbar{height:26px}
+  .controls{display:none}
+  .steps li{grid-template-columns:36px minmax(0,1fr)}
+  .calc .cell{flex:1 1 40%}
+}
+</style>
+
+<div class="app" dir="rtl" lang="ar">
+<main class="viewport">
+<div class="stage" id="stage">
+
+<!-- 1 COVER -->
+<section class="slide is-active" data-level="k" data-title="الغلاف">
+  <svg class="regmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="12" class="nf sk-i" stroke-width="1.2"/><circle cx="20" cy="20" r="6" class="nf sk-i" stroke-width="1.2"/><path d="M20 2v36M2 20h36" class="sk-i" stroke-width="1.2"/></svg>
+  <div class="cover">
+    <div class="stack lg">
+      <div class="brand">TAQAT ACADEMY</div>
+      <h1>AI Solo Creative Agency</h1>
+      <p class="ar-t">الدبلوم المهني في الإنتاج الإبداعي والتسويق الرقمي</p>
+      <p class="sub">من موهبة إبداعية إلى محترف قادر على تشغيل وكالة رقمية متكاملة. الخطة الأكاديمية والتدريبية المعدّلة لدفعة 2027.</p>
+      <div class="meta" style="margin-top:1cqw">
+        <div><strong>12</strong><span>شهراً</span></div>
+        <div><strong>1,200</strong><span>ساعة تدريبية</span></div>
+        <div><strong>3</strong><span>فصول</span></div>
+        <div><strong>80%</strong><span>تطبيق عملي</span></div>
+      </div>
+    </div>
+    <div class="lvtiles">
+      <div class="lvtile lvl-p0"><span class="c">P0</span><div><b>بناء العلامة التجارية</b><span>الشهور 1–4 · المخرج Brand Launch Kit</span></div></div>
+      <div class="lvtile lvl-p1"><span class="c">P1</span><div><b>الحملات المتكاملة والنمو</b><span>الشهور 5–8 · المخرج Integrated Campaign</span></div></div>
+      <div class="lvtile lvl-p2"><span class="c">P2</span><div><b>التخصص وبناء الوكالة</b><span>الشهور 9–12 · المخرج وكالة ومشروع عميل</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 GRADUATE -->
+<section class="slide" data-level="k" data-title="الخريج الذي نبنيه">
+  <header class="s-head"><span class="tag">رؤية البرنامج</span><h2>الخريج الذي نبنيه</h2></header>
+  <div class="s-body row2 wide-r">
+    <div class="stack lg">
+      <p class="lead">محترف يدير دورة العمل الإبداعي كاملة. يفهم احتياج العميل، ويبني الهوية، وينتج الصورة والفيديو، ويطلق الحملة ويقرأ نتائجها.</p>
+      <table class="tablelite">
+        <thead><tr><th>الكفاءة</th><th>أين تُبنى</th></tr></thead>
+        <tbody>
+          <tr><td>التصميم والهوية البصرية</td><td class="muted">P0، والتعمّق في التخصص A</td></tr>
+          <tr><td>الإنتاج المرئي والفيديو بالذكاء الاصطناعي</td><td class="muted">P0 وP1، والتعمّق في التخصص B</td></tr>
+          <tr><td>كتابة المحتوى والسرد</td><td class="muted">P0 وP1</td></tr>
+          <tr><td>التسويق الرقمي والإعلانات والتحليل</td><td class="muted">P1، والتعمّق في التخصص C</td></tr>
+          <tr><td>إدارة العملاء والتواصل بالإنجليزية</td><td class="muted">في كل الفصول، 130 ساعة</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="stack lg">
+      <div class="row3" style="gap:.8cqw">
+        <div class="panel"><h3>التوظيف</h3><p class="xs muted">في الوكالات وأقسام التسويق والإنتاج</p></div>
+        <div class="panel"><h3>العمل الحر</h3><p class="xs muted">مع عملاء محليين ودوليين عبر طاقات وBrightGaza</p></div>
+        <div class="panel"><h3>وكالة مستقلة</h3><p class="xs muted">بخدمات وباقات وخطة إطلاق جاهزة</p></div>
+      </div>
+      <dl class="stack" style="margin:0">
+        <div class="panel"><dt class="xs muted">الفئة المستهدفة</dt><dd class="small" style="margin:0">خريجو الثانوية العامة والمبتدئون، دون اشتراط خبرة سابقة</dd></div>
+        <div class="panel"><dt class="xs muted">المنهجية</dt><dd class="small" style="margin:0">AI-First، والتعلم بالمشاريع، والتقييم القائم على الكفاءة</dd></div>
+        <div class="panel"><dt class="xs muted">اللغة</dt><dd class="small" style="margin:0">العربية والإنجليزية</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- 3 FRAMEWORK DIVIDER -->
+<section class="slide" data-level="k" data-title="الإطار الأكاديمي">
+  <div class="divider" style="grid-template-columns:minmax(0,4fr) minmax(0,7fr)">
+    <div class="stack lg">
+      <span class="tag">القسم الأول</span>
+      <p class="d-title">الإطار الأكاديمي وتوزيع الساعات</p>
+      <p class="d-en">800 ساعة مشتركة للجميع، ثم 400 ساعة في تخصص واحد يختاره الطالب.</p>
+      <div class="meta">
+        <div><strong>48</strong><span>أسبوعاً تدريبياً</span></div>
+        <div><strong>25</strong><span>ساعة أسبوعياً</span></div>
+        <div><strong>6</strong><span>بوابات تقييم</span></div>
+      </div>
+    </div>
+    <figure class="art">
+      <figcaption><span><b>رحلة الطالب</b> على مدار 12 شهراً</span><span>البوابات G1–G6 كل شهرين</span></figcaption>
+      <div class="journey" style="padding-block:1cqw .4cqw">
+        <span class="gate" style="grid-column:2">G1</span><span class="gate" style="grid-column:4">G2</span><span class="gate" style="grid-column:6">G3</span>
+        <span class="gate" style="grid-column:8">G4</span><span class="gate" style="grid-column:10">G5</span><span class="gate" style="grid-column:12">G6</span>
+        <div class="band p0"><b>P0</b><span>بناء العلامة</span></div>
+        <div class="band p1"><b>P1</b><span>الحملات والنمو</span></div>
+        <div class="band p2"><b>P2</b><span>التخصص والوكالة</span></div>
+        <span class="mo">1</span><span class="mo">2</span><span class="mo">3</span><span class="mo">4</span><span class="mo">5</span><span class="mo">6</span><span class="mo">7</span><span class="mo">8</span><span class="mo">9</span><span class="mo">10</span><span class="mo">11</span><span class="mo">12</span>
+      </div>
+      <div class="row3" style="gap:.8cqw;margin-top:.6cqw">
+        <div class="panel lvl-p0" style="background:var(--surface)"><span class="xs muted">نهاية الشهر 4</span><b class="small">Brand Launch Kit</b></div>
+        <div class="panel lvl-p1" style="background:var(--surface)"><span class="xs muted">نهاية الشهر 8</span><b class="small">Integrated Campaign + اختيار التخصص</b></div>
+        <div class="panel lvl-p2" style="background:var(--surface)"><span class="xs muted">نهاية الشهر 12</span><b class="small">وكالة شخصية ومشروع عميل حقيقي</b></div>
+      </div>
+    </figure>
+  </div>
+</section>
+
+<!-- 4 HOURS -->
+<section class="slide" data-level="k" data-title="توزيع الساعات">
+  <header class="s-head"><span class="tag">الإطار الأكاديمي</span><h2>توزيع الساعات على الفصول</h2><p>كل فصل 16 أسبوعاً × 25 ساعة = 400 ساعة. تنخفض نسبة النظري تدريجياً كلما اقترب الطالب من سوق العمل.</p></header>
+  <div class="s-body">
+    <div class="scroll"><div class="ctable" style="grid-template-columns:auto minmax(0,1.6fr) auto auto auto minmax(0,1.5fr) minmax(0,1.3fr);font-size:var(--t-body)">
+      <div class="hd"><span>الفصل</span><span>المحور</span><span class="hrs">نظري</span><span class="hrs">عملي</span><span class="hrs">الإجمالي</span><span>نظري / عملي</span><span>المخرج</span></div>
+      <div class="lvl-p0"><span class="code">P0</span><span>الأساس الإبداعي وبناء العلامة</span><span class="hrs">120</span><span class="hrs">280</span><span class="hrs">400</span><span class="bar"><i style="--w:100%;--t:30%"><b class="th"></b><b class="pr"></b></i></span><span class="out en">Brand Launch Kit</span></div>
+      <div class="lvl-p1"><span class="code">P1</span><span>الإنتاج المتكامل والتسويق الرقمي</span><span class="hrs">80</span><span class="hrs">320</span><span class="hrs">400</span><span class="bar"><i style="--w:100%;--t:20%"><b class="th"></b><b class="pr"></b></i></span><span class="out en">Integrated Campaign</span></div>
+      <div class="lvl-p2"><span class="code">P2</span><span>التخصص المهني وبناء الوكالة</span><span class="hrs">40</span><span class="hrs">360</span><span class="hrs">400</span><span class="bar"><i style="--w:100%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="out en">Specialization &amp; Agency</span></div>
+      <div class="tot"><span></span><span>المجموع</span><span class="hrs">240</span><span class="hrs">960</span><span class="hrs">1,200</span><span class="small">20% نظري · 80% عملي</span><span></span></div>
+    </div></div>
+    <div class="legend lvl-p1"><span><i class="sw th"></i>نظري: شرح وعرض</span><span><i class="sw"></i>عملي: تطبيق موجّه، إنتاج فردي، مراجعة، مشاريع عملاء</span></div>
+    <div class="row3" style="margin-top:1cqw">
+      <div class="panel"><h3>800 ساعة مشتركة</h3><p class="xs muted">P0 وP1 لجميع الطلاب، فيبني كل خريج قاعدة في التصميم والفيديو والمحتوى والتسويق.</p></div>
+      <div class="panel"><h3>400 ساعة متخصصة</h3><p class="xs muted">يدرس الطالب تخصصاً واحداً فقط، ولا تُجمع ساعات التخصصات الثلاثة في إجمالي الدبلوم.</p></div>
+      <div class="panel"><h3>العطل خارج الحساب</h3><p class="xs muted">52 أسبوعاً ناقص 48 تدريبياً يترك 4 أسابيع: أسبوع راحة بعد كل فصل، وأسبوع للعيدين.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 WEEK & DAY -->
+<section class="slide" data-level="k" data-title="الأسبوع واليوم التدريبي">
+  <header class="s-head"><span class="tag">الإطار الأكاديمي</span><h2>الأسبوع واليوم التدريبي</h2><p>خمسة أيام × 5 ساعات. يتغيّر توزيع اليوم بين الفصول ليطابق نسبة النظري المعلنة لكل فصل.</p></header>
+  <div class="s-body row2" style="grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)">
+    <table class="tablelite">
+      <thead><tr><th>اليوم</th><th>النشاط</th><th class="n">ساعات</th></tr></thead>
+      <tbody>
+        <tr><td>الأحد</td><td>مفاهيم وتطبيق موجّه</td><td class="n">5</td></tr>
+        <tr><td>الاثنين</td><td>مختبر الأدوات</td><td class="n">5</td></tr>
+        <tr><td>الثلاثاء</td><td>مشاريع فردية</td><td class="n">5</td></tr>
+        <tr><td>الأربعاء</td><td>استوديو إنتاج</td><td class="n">5</td></tr>
+        <tr><td>الخميس</td><td>مراجعة وتواصل مهني</td><td class="n">5</td></tr>
+        <tr class="tot"><td>الأسبوع</td><td class="muted xs">يمكن اعتماد 4 أيام حضورية ويوم موجّه عن بُعد</td><td class="n">25</td></tr>
+      </tbody>
+    </table>
+    <div class="stack lg">
+      <h3>اليوم التدريبي (300 دقيقة) حسب الفصل</h3>
+      <div class="stack lvl-p0"><div class="xs"><b>P0</b> · نظري 30%</div><div class="stackbar"><span style="width:30%;background:repeating-linear-gradient(-45deg,var(--m) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--m);color:var(--ink)">شرح 90</span><span style="width:20%;background:color-mix(in srgb,var(--m) 60%,var(--surface));color:var(--ink)">موجّه 60</span><span style="width:30%;background:var(--m)">مستقل 90</span><span style="width:20%;background:color-mix(in srgb,var(--m) 25%,var(--surface));color:var(--ink)">مراجعة 60</span></div></div>
+      <div class="stack lvl-p1"><div class="xs"><b>P1</b> · نظري 20%</div><div class="stackbar"><span style="width:20%;background:repeating-linear-gradient(-45deg,var(--c) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--c);color:var(--ink)">شرح 60</span><span style="width:25%;background:color-mix(in srgb,var(--c) 60%,var(--surface));color:var(--ink)">موجّه 75</span><span style="width:35%;background:var(--c)">مستقل 105</span><span style="width:20%;background:color-mix(in srgb,var(--c) 25%,var(--surface));color:var(--ink)">مراجعة 60</span></div></div>
+      <div class="stack lvl-p2"><div class="xs"><b>P2</b> · نظري 10%</div><div class="stackbar"><span style="width:10%;background:repeating-linear-gradient(-45deg,var(--y) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--y);color:var(--ink)">30</span><span style="width:10%;background:color-mix(in srgb,var(--y) 60%,var(--surface));color:var(--ink)">30</span><span style="width:60%;background:var(--y);color:#1d1a10">إنتاج تخصصي ومشاريع عملاء 180</span><span style="width:20%;background:color-mix(in srgb,var(--y) 25%,var(--surface));color:var(--ink)">مراجعة 60</span></div></div>
+      <p class="note">الأرقام بالدقائق. في P2 يتحول التطبيق الموجّه إلى إرشاد فردي داخل الاستوديو.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 P0 DIVIDER -->
+<section class="slide" data-level="p0" data-title="P0 بناء العلامة">
+  <div class="divider">
+    <div class="stack lg">
+      <div class="lv-code">P0</div>
+      <p class="d-title">الأساس الإبداعي وبناء العلامة التجارية</p>
+      <p class="d-en en" style="text-align:right">Creative Foundation &amp; Brand Building</p>
+      <div class="meta"><div><strong>400</strong><span>ساعة</span></div><div><strong>16</strong><span>أسبوعاً</span></div><div><strong>1–4</strong><span>الشهور</span></div><div><strong>9</strong><span>مقررات</span></div></div>
+      <p class="small muted">يبني الطالب علامة تجارية واحدة متكاملة تتراكم أسبوعاً بعد أسبوع، دون الاعتماد على القوالب أو التوليد الآلي وحده.</p>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="Brand Launch Kit: دليل هوية، ألوان، خطوط، بطاقة عمل، منشور سوشيال، فيديو وإعلان">
+        <rect x="20" y="20" width="250" height="300" rx="6" class="fs st"/>
+        <circle cx="145" cy="104" r="52" class="fm"/>
+        <rect x="127" y="84" width="10" height="40" rx="5" class="fs"/><rect x="140" y="70" width="10" height="54" rx="5" class="fs"/><rect x="153" y="84" width="10" height="40" rx="5" class="fs"/>
+        <rect x="122" y="128" width="46" height="6" rx="3" class="fs"/>
+        <text x="145" y="194" text-anchor="middle" font-size="28" class="fi disp" direction="rtl">سنابل</text>
+        <text x="145" y="214" text-anchor="middle" font-size="12" class="fmu" direction="rtl">مخبز وحلويات</text>
+        <rect x="44" y="234" width="202" height="1.5" class="fl"/>
+        <rect x="44" y="250" width="202" height="7" rx="3.5" class="fl"/><rect x="74" y="266" width="172" height="7" rx="3.5" class="fl"/><rect x="60" y="282" width="186" height="7" rx="3.5" class="fl"/>
+        <text x="145" y="308" text-anchor="middle" font-size="10" class="fmu" direction="rtl">دليل الهوية</text>
+        <rect x="290" y="20" width="67" height="78" rx="4" class="fm"/><rect x="364" y="20" width="67" height="78" rx="4" class="fy"/><rect x="438" y="20" width="67" height="78" rx="4" class="fi"/><rect x="512" y="20" width="67" height="78" rx="4" class="tm st"/>
+        <text x="323" y="113" text-anchor="middle" font-size="10" class="fmu" direction="rtl">رئيسي</text><text x="397" y="113" text-anchor="middle" font-size="10" class="fmu" direction="rtl">ثانوي</text><text x="471" y="113" text-anchor="middle" font-size="10" class="fmu" direction="rtl">النص</text><text x="545" y="113" text-anchor="middle" font-size="10" class="fmu" direction="rtl">الخلفية</text>
+        <rect x="290" y="126" width="140" height="108" rx="6" class="fs st"/>
+        <text x="326" y="192" text-anchor="middle" font-size="38" class="fi disp">Aa</text><text x="394" y="192" text-anchor="middle" font-size="38" class="fm disp" direction="rtl">أب</text>
+        <text x="360" y="222" text-anchor="middle" font-size="10" class="fmu" direction="rtl">الخطوط العربية والإنجليزية</text>
+        <rect x="440" y="126" width="140" height="80" rx="6" class="fi"/>
+        <circle cx="560" cy="150" r="11" class="fm"/>
+        <rect x="455" y="144" width="80" height="6" rx="3" class="fp"/><rect x="475" y="156" width="60" height="5" rx="2.5" class="fp" opacity=".55"/>
+        <rect x="455" y="182" width="110" height="4" rx="2" class="fp" opacity=".35"/>
+        <rect x="290" y="246" width="140" height="90" rx="6" class="fy"/>
+        <path d="M290 336 L330 292 L358 316 L392 280 L430 320 L430 330 Q430 336 424 336Z" class="fm" opacity=".85"/>
+        <circle cx="360" cy="288" r="16" class="fs"/><path d="M355 280 L369 288 L355 296Z" class="fi"/>
+        <rect x="290" y="346" width="44" height="66" rx="4" class="tm"/><rect x="338" y="346" width="44" height="66" rx="4" class="ty"/><rect x="386" y="346" width="44" height="66" rx="4" class="tc"/>
+        <circle cx="312" cy="378" r="12" class="fm"/><rect x="350" y="364" width="20" height="32" rx="5" class="fy"/><circle cx="408" cy="382" r="10" class="fc"/>
+        <rect x="448" y="216" width="132" height="196" rx="16" class="fi"/>
+        <rect x="455" y="228" width="118" height="172" rx="10" class="fs"/>
+        <rect x="463" y="238" width="102" height="88" rx="6" class="tm"/>
+        <circle cx="514" cy="282" r="24" class="fm"/>
+        <rect x="506" y="268" width="5" height="20" rx="2.5" class="fs"/><rect x="512" y="262" width="5" height="26" rx="2.5" class="fs"/><rect x="518" y="268" width="5" height="20" rx="2.5" class="fs"/>
+        <rect x="475" y="336" width="90" height="6" rx="3" class="fl"/><rect x="495" y="348" width="70" height="6" rx="3" class="fl"/>
+        <circle cx="552" cy="376" r="7" class="fm"/><rect x="463" y="372" width="60" height="8" rx="4" class="fy"/>
+        <rect x="20" y="334" width="250" height="78" rx="6" class="fm"/>
+        <text x="145" y="366" text-anchor="middle" font-size="16" class="fs disp" direction="rtl">خبز الصباح كما تحبه</text>
+        <rect x="105" y="380" width="80" height="20" rx="10" class="fy"/>
+        <text x="145" y="394" text-anchor="middle" font-size="10" class="fi" direction="rtl">اطلب الآن</text>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b class="en">Brand Launch Kit</b></span><span>مثال توضيحي لعلامة افتراضية</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 7 P0 OUTCOME LIST -->
+<section class="slide" data-level="p0" data-title="P0 مكونات المخرج">
+  <header class="s-head"><span class="tag">P0 الفصل الأول</span><h2>ما يسلّمه الطالب في نهاية الشهر الرابع</h2><p>مشروع فردي متراكم يُبنى على علامة واحدة طوال الفصل، ويُشترط اجتياز تقييمه قبل الانتقال إلى P1.</p></header>
+  <div class="s-body row3">
+    <div class="panel"><h3>البحث والفكرة</h3><ul class="olist one"><li>Creative Brief وتحليل الجمهور والمنافسين</li><li>Moodboard وثلاثة اتجاهات إبداعية مبرّرة</li></ul></div>
+    <div class="panel"><h3>الهوية</h3><ul class="olist one"><li>شعار ونظام هوية متكامل</li><li>دليل استخدام الهوية</li><li>تطبيقات الهوية الرقمية والمطبوعة</li></ul></div>
+    <div class="panel"><h3>المواد الرقمية والمطبوعة</h3><ul class="olist one"><li>12 تصميماً رقمياً</li><li>بوستر وبروشور وعرض تقديمي</li><li>الملفات المصدرية كاملة</li></ul></div>
+    <div class="panel"><h3>الصورة والفيديو</h3><ul class="olist one"><li>جلسة تصوير منتج و10 صور تجارية</li><li>فيديو تعريفي 60–90 ثانية</li><li>ثلاثة فيديوهات قصيرة</li></ul></div>
+    <div class="panel"><h3>الكتابة</h3><ul class="olist one"><li>دليل نبرة العلامة</li><li>15 منشوراً و5 نصوص إعلانية</li><li>3 سيناريوهات</li></ul></div>
+    <div class="panel"><h3>العرض والتوثيق</h3><ul class="olist one"><li>سجل AI Work Log للفصل</li><li>عرض العلامة بالإنجليزية</li><li>محاكاة اجتماع عميل دولي</li></ul></div>
+  </div>
+</section>
+
+<!-- 8 P0 COURSES -->
+<section class="slide" data-level="p0" data-title="P0 المقررات">
+  <header class="s-head"><span class="tag">P0 الفصل الأول</span><h2>تسعة مقررات على بيئة أدوات موحّدة</h2></header>
+  <div class="s-body">
+    <div class="scroll"><div class="ctable">
+      <div class="hd"><span>الرمز</span><span>المقرر</span><span>نظري / عملي</span><span class="hrs">ساعات</span><span>مخرج المقرر</span></div>
+      <div><span class="code">CF100</span><span class="cname"><span class="en">Digital &amp; AI Foundations<span class="new">جديد</span></span><span class="ar">الأساسيات الرقمية والتهيئة واختبار المستوى</span></span><span class="bar"><i style="--w:25%;--t:50%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">20</span><span class="out">ملف رقمي منظم ونتيجة اختبار الإنجليزية</span></div>
+      <div><span class="code">CF101</span><span class="cname"><span class="en">Creative Thinking &amp; Visual Fundamentals</span><span class="ar">التفكير الإبداعي وأساسيات البصريات</span></span><span class="bar"><i style="--w:50%;--t:50%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">إعادة تصميم مواد ضعيفة و3 اتجاهات إبداعية</span></div>
+      <div><span class="code">CF102</span><span class="cname"><span class="en">Graphic Design &amp; Digital Production</span><span class="ar">Photoshop وIllustrator، ومقاسات المنصات والطباعة</span></span><span class="bar"><i style="--w:100%;--t:19%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">80</span><span class="out">12 تصميماً، بوستر، بروشور، عرض تقديمي</span></div>
+      <div><span class="code">CF103</span><span class="cname"><span class="en">Branding &amp; Visual Identity</span><span class="ar">شخصية العلامة والشعار ودليل الهوية</span></span><span class="bar"><i style="--w:75%;--t:25%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">60</span><span class="out">هوية متكاملة وشعار ودليل استخدام</span></div>
+      <div><span class="code">CF104</span><span class="cname"><span class="en">Photography &amp; Image Production</span><span class="ar">التصوير بالهاتف والكاميرا واستوديو منخفض التكلفة</span></span><span class="bar"><i style="--w:37.5%;--t:33%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span><span class="out">جلسة تصوير منتج و10 صور تجارية</span></div>
+      <div><span class="code">CF105</span><span class="cname"><span class="en">Video Production &amp; Editing</span><span class="ar">السيناريو والتصوير والمونتاج على Premiere Pro</span></span><span class="bar"><i style="--w:68.75%;--t:18%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">55</span><span class="out">فيديو 60–90 ث وثلاثة فيديوهات قصيرة</span></div>
+      <div><span class="code">CF106</span><span class="cname"><span class="en">Copywriting &amp; Creative Storytelling</span><span class="ar">الرسالة والنبرة وAIDA وPAS</span></span><span class="bar"><i style="--w:50%;--t:37.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">دليل نبرة، 15 منشوراً، 5 إعلانات، 3 سيناريوهات</span></div>
+      <div><span class="code">CF107</span><span class="cname"><span class="en">AI Creative Workflows</span><span class="ar">يُوزَّع على الأسابيع بدل تركيزه في الأسبوع 14</span></span><span class="bar"><i style="--w:43.75%;--t:29%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">35</span><span class="out">حملة بصرية مولّدة ثم محسّنة يدوياً مع السجل</span></div>
+      <div><span class="code">CF108</span><span class="cname"><span class="en">English &amp; Professional Communication</span><span class="ar">مصطلحات الصناعة والعروض والاجتماعات</span></span><span class="bar"><i style="--w:50%;--t:37.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">عرض الهوية بالإنجليزية ومحاكاة اجتماع</span></div>
+      <div class="tot"><span></span><span>الإجمالي · 120 نظري و280 عملي</span><span class="legend"><span><i class="sw th"></i>نظري</span><span><i class="sw"></i>عملي</span></span><span class="hrs">400</span><span></span></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 9 P0 WEEKS -->
+<section class="slide" data-level="p0" data-title="P0 الخطة الأسبوعية">
+  <header class="s-head"><span class="tag">P0 الفصل الأول</span><h2>16 أسبوعاً، وفي كل أسبوع تطبيق للذكاء الاصطناعي</h2></header>
+  <div class="weeks">
+    <div class="wk"><span class="n">1</span><span class="f">التهيئة والأساسيات الرقمية</span><span class="o">ملف رقمي منظم واختبار المستوى</span><span class="a">AI: أول تحليل لـ Brief</span></div>
+    <div class="wk"><span class="n">2</span><span class="f">التفكير الإبداعي وفهم العميل</span><span class="o en" style="text-align:right">Creative Brief</span><span class="a">AI: البحث وصياغة الملخص</span></div>
+    <div class="wk"><span class="n">3</span><span class="f">الألوان والخطوط والتكوين</span><span class="o en" style="text-align:right">Moodboard</span><span class="a">AI: مراجع بصرية ونقدها</span></div>
+    <div class="wk"><span class="n">4</span><span class="f">التصميم الرقمي</span><span class="o">تصاميم رقمية</span><span class="a">AI: عناصر مولّدة تُدمج يدوياً</span></div>
+    <div class="wk"><span class="n">5</span><span class="f">معالجة الصور</span><span class="o en" style="text-align:right">Advertising Visuals</span><span class="a">AI: Generative Fill</span></div>
+    <div class="wk"><span class="n">6</span><span class="f">الشعارات والبحث</span><span class="o">3 مقترحات شعار</span><span class="a">AI: استكشاف ثم رسم Vector</span></div>
+    <div class="wk"><span class="n">7</span><span class="f">نظام الهوية</span><span class="o en" style="text-align:right">Visual Identity System</span><span class="a">AI: Mockups للتطبيقات</span></div>
+    <div class="wk hl"><span class="g">G1</span><span class="n">8</span><span class="f">دليل الهوية</span><span class="o en" style="text-align:right">Brand Guidelines</span><span class="a">بوابة أساسيات التصميم والهوية</span></div>
+    <div class="wk"><span class="n">9</span><span class="f">التصوير والإضاءة</span><span class="o">جلسة تصوير منتج</span><span class="a">تصوير حقيقي دون توليد</span></div>
+    <div class="wk"><span class="n">10</span><span class="f">معالجة الصور ودمج المولّد</span><span class="o">10 صور تجارية</span><span class="a">AI: دمج الحقيقي بالمولّد</span></div>
+    <div class="wk"><span class="n">11</span><span class="f">كتابة المحتوى</span><span class="o en" style="text-align:right">Copywriting Kit</span><span class="a">AI: مسودات تُحرَّر وتُدقَّق</span></div>
+    <div class="wk"><span class="n">12</span><span class="f">السيناريو والتخطيط</span><span class="o en" style="text-align:right">Storyboard &amp; Shot List</span><span class="a">AI: Storyboard مساعد</span></div>
+    <div class="wk"><span class="n">13</span><span class="f">التصوير والمونتاج</span><span class="o">فيديو تعريفي 60–90 ث</span><span class="a">AI: تعليق صوتي وترجمة</span></div>
+    <div class="wk"><span class="n">14</span><span class="f">الفيديو القصير</span><span class="o">3 فيديوهات قصيرة وAI Assets</span><span class="a">AI: Image-to-Video</span></div>
+    <div class="wk"><span class="n">15</span><span class="f">دمج المخرجات</span><span class="o en" style="text-align:right">Brand Kit</span><span class="a">مراجعة سجل AI</span></div>
+    <div class="wk hl"><span class="g">G2</span><span class="n">16</span><span class="f">العرض والتقييم</span><span class="o en" style="text-align:right">Brand Presentation</span><span class="a">بوابة Brand Launch Kit</span></div>
+  </div>
+</section>
+
+<!-- 10 P1 DIVIDER -->
+<section class="slide" data-level="p1" data-title="P1 الحملات والنمو">
+  <div class="divider">
+    <div class="stack lg">
+      <div class="lv-code">P1</div>
+      <p class="d-title">الإنتاج المتكامل والتسويق الرقمي</p>
+      <p class="d-en en" style="text-align:right">Integrated Creative Production &amp; Digital Marketing</p>
+      <div class="meta"><div><strong>400</strong><span>ساعة</span></div><div><strong>16</strong><span>أسبوعاً</span></div><div><strong>5–8</strong><span>الشهور</span></div><div><strong>9</strong><span>مقررات</span></div></div>
+      <ul class="olist">
+        <li>استراتيجية 90 يوماً</li><li>محتوى 30 يوماً</li><li>15 مادة إعلانية</li><li>إعلان فيديو ونسخ قصيرة</li><li>صفحة هبوط منشورة</li><li>خطة استهداف وميزانية</li><li>لوحة تحليل وأتمتة</li><li>تقرير تحسين بالإنجليزية</li>
+      </ul>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="حملة متكاملة: صفحة هبوط، مواد إعلانية، تقويم محتوى، ولوحة أداء">
+        <rect x="20" y="20" width="330" height="252" rx="8" class="fs st"/>
+        <path d="M20 44 V28 Q20 20 28 20 H342 Q350 20 350 28 V44Z" class="fp"/>
+        <circle cx="336" cy="32" r="4" class="fl"/><circle cx="324" cy="32" r="4" class="fl"/><circle cx="312" cy="32" r="4" class="fl"/>
+        <rect x="90" y="26" width="200" height="12" rx="6" class="fs"/>
+        <rect x="36" y="58" width="130" height="120" rx="6" class="tc"/>
+        <rect x="78" y="78" width="46" height="84" rx="10" class="fc"/><rect x="92" y="70" width="18" height="12" rx="3" class="fi"/>
+        <rect x="196" y="64" width="138" height="13" rx="6.5" class="fi"/><rect x="226" y="84" width="108" height="13" rx="6.5" class="fi"/>
+        <rect x="196" y="108" width="138" height="6" rx="3" class="fl"/><rect x="214" y="120" width="120" height="6" rx="3" class="fl"/>
+        <rect x="254" y="138" width="80" height="26" rx="13" class="fc"/>
+        <text x="294" y="155" text-anchor="middle" font-size="11" class="fs" direction="rtl">سجّل الآن</text>
+        <rect x="36" y="192" width="298" height="66" rx="6" class="fp"/>
+        <rect x="190" y="202" width="134" height="18" rx="4" class="fs st"/><rect x="46" y="202" width="134" height="18" rx="4" class="fs st"/>
+        <rect x="46" y="228" width="186" height="18" rx="4" class="fs st"/><rect x="242" y="228" width="82" height="18" rx="4" class="fi"/>
+        <g>
+          <rect x="370" y="20" width="64" height="64" rx="4" class="tc"/><circle cx="402" cy="52" r="18" class="fc"/>
+          <rect x="440" y="20" width="64" height="64" rx="4" class="fc"/><rect x="452" y="56" width="40" height="8" rx="4" class="fs"/><rect x="460" y="34" width="24" height="16" rx="3" class="fs" opacity=".6"/>
+          <rect x="510" y="20" width="64" height="64" rx="4" class="ty"/><path d="M520 74 L542 44 L564 74Z" class="fy"/>
+          <rect x="370" y="92" width="64" height="64" rx="4" class="fi"/><rect x="382" y="128" width="40" height="8" rx="4" class="fc"/><rect x="382" y="108" width="28" height="6" rx="3" class="fp" opacity=".6"/>
+          <rect x="440" y="92" width="64" height="64" rx="4" class="tm"/><circle cx="472" cy="124" r="14" class="fm"/>
+          <rect x="510" y="92" width="64" height="64" rx="4" class="tc"/><path d="M528 108 L556 124 L528 140Z" class="fc"/>
+        </g>
+        <text x="472" y="174" text-anchor="middle" font-size="11" class="fmu" direction="rtl">مواد إعلانية بنسخ للاختبار</text>
+        <rect x="370" y="186" width="210" height="226" rx="8" class="fs st"/>
+        <rect x="478" y="198" width="90" height="52" rx="6" class="fp"/><rect x="382" y="198" width="90" height="52" rx="6" class="fp"/>
+        <text x="523" y="216" text-anchor="middle" font-size="10" class="fmu">ROAS</text><text x="523" y="239" text-anchor="middle" font-size="18" class="fc disp">3.0</text>
+        <text x="427" y="216" text-anchor="middle" font-size="10" class="fmu">CTR</text><text x="427" y="239" text-anchor="middle" font-size="18" class="fi disp">2.4%</text>
+        <rect x="382" y="294" width="186" height="1" class="fl"/><rect x="382" y="326" width="186" height="1" class="fl"/><rect x="382" y="358" width="186" height="1" class="fl"/><rect x="382" y="390" width="186" height="1" class="fl"/>
+        <polygon points="382,380 410,370 438,362 466,340 494,346 522,320 550,306 568,292 568,390 382,390" class="tc"/>
+        <polyline points="382,380 410,370 438,362 466,340 494,346 522,320 550,306 568,292" class="nf sk-c" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="568" cy="292" r="5" class="fc"/>
+        <text x="475" y="276" text-anchor="middle" font-size="10" class="fmu" direction="rtl">لوحة الأداء</text>
+        <rect x="20" y="288" width="330" height="124" rx="8" class="fs st"/>
+        <text x="185" y="306" text-anchor="middle" font-size="10" class="fmu" direction="rtl">تقويم محتوى 30 يوماً</text>
+        <g id="cal"></g>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b class="en">Integrated Marketing Campaign</b></span><span>مثال توضيحي</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 11 P1 COURSES -->
+<section class="slide" data-level="p1" data-title="P1 المقررات">
+  <header class="s-head"><span class="tag">P1 الفصل الثاني</span><h2>من الإنتاج الإبداعي إلى حملة مرتبطة بهدف تجاري</h2></header>
+  <div class="s-body">
+    <div class="scroll"><div class="ctable">
+      <div class="hd"><span>الرمز</span><span>المقرر</span><span>نظري / عملي</span><span class="hrs">ساعات</span><span>مخرج المقرر</span></div>
+      <div><span class="code">IM201</span><span class="cname"><span class="en">Advanced Creative Production</span><span class="ar">Key Visual وأنظمة تصميم قابلة للتوسع</span></span><span class="bar"><i style="--w:57%;--t:25%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">فكرة رئيسية، 3 اتجاهات، 15 مادة إعلانية</span></div>
+      <div><span class="code">IM202</span><span class="cname"><span class="en">AI Video &amp; Motion Graphics</span><span class="ar">After Effects وPremiere وRunway وKling وVeo</span></span><span class="bar"><i style="--w:100%;--t:14%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">70</span><span class="out">إعلان 30–60 ث، إعلان متحرك، 3 نسخ قصيرة</span></div>
+      <div><span class="code">IM203</span><span class="cname"><span class="en">Digital Marketing Strategy</span><span class="ar">السوق والشرائح والتموضع ورحلة العميل</span></span><span class="bar"><i style="--w:57%;--t:37.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">استراتيجية تسويقية لمدة 90 يوماً</span></div>
+      <div><span class="code">IM204</span><span class="cname"><span class="en">Social Media &amp; Content Marketing</span><span class="ar">محاور المحتوى والتقويم والنمو العضوي</span></span><span class="bar"><i style="--w:57%;--t:25%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">خطة محتوى 30 يوماً مع جدولة وتقارير</span></div>
+      <div><span class="code">IM205</span><span class="cname"><span class="en">Paid Advertising &amp; Performance</span><span class="ar">مختبر محاكاة، ثم حملة حية برصيد الأكاديمية</span></span><span class="bar"><i style="--w:86%;--t:25%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">60</span><span class="out">حملة بإشراف مع A/B Testing وتحليل وتوصيات</span></div>
+      <div><span class="code">IM206</span><span class="cname"><span class="en">Landing Pages, SEO &amp; Conversion</span><span class="ar">Figma وNo-Code وربط النماذج</span></span><span class="bar"><i style="--w:57%;--t:25%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">صفحة هبوط منشورة مع قياس التحويل</span></div>
+      <div><span class="code">IM207</span><span class="cname"><span class="en">Marketing Analytics &amp; Automation</span><span class="ar">GA4 وUTM وLooker Studio وn8n أو Make</span></span><span class="bar"><i style="--w:57%;--t:12.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span><span class="out">لوحة متابعة وسير آلي للعملاء المحتملين</span></div>
+      <div><span class="code">IM208</span><span class="cname"><span class="en">Client Management &amp; English</span><span class="ar">Brief والعروض الفنية والمالية والتفاوض</span></span><span class="bar"><i style="--w:71%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">50</span><span class="out">محاكاة دورة عمل كاملة مع عميل دولي</span></div>
+      <div><span class="code">IM209</span><span class="cname"><span class="en">Specialization Tasters<span class="new">جديد</span></span><span class="ar">ورشة عملية لكل تخصص (7 + 7 + 6 ساعات)</span></span><span class="bar"><i style="--w:28.5%;--t:0%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">20</span><span class="out">تجربة فعلية للتخصصات الثلاثة قبل الاختيار</span></div>
+      <div class="tot"><span></span><span>الإجمالي · 80 نظري و320 عملي</span><span class="legend"><span><i class="sw th"></i>نظري</span><span><i class="sw"></i>عملي</span></span><span class="hrs">400</span><span></span></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 12 P1 WEEKS -->
+<section class="slide" data-level="p1" data-title="P1 الخطة الأسبوعية">
+  <header class="s-head"><span class="tag">P1 الفصل الثاني</span><h2>16 أسبوعاً من البحث إلى الدفاع عن الحملة</h2></header>
+  <div class="weeks">
+    <div class="wk"><span class="n">1</span><span class="f">السوق والجمهور</span><span class="o en" style="text-align:right">Market Research</span><span class="a en" style="text-align:right">IM203</span></div>
+    <div class="wk"><span class="n">2</span><span class="f">الاستراتيجية</span><span class="o en" style="text-align:right">Marketing Strategy</span><span class="a en" style="text-align:right">IM203</span></div>
+    <div class="wk"><span class="n">3</span><span class="f">المفهوم الإبداعي</span><span class="o en" style="text-align:right">Campaign Concept</span><span class="a en" style="text-align:right">IM201</span></div>
+    <div class="wk"><span class="n">4</span><span class="f">التصميم المتقدم</span><span class="o en" style="text-align:right">Campaign Design System</span><span class="a en" style="text-align:right">IM201</span></div>
+    <div class="wk"><span class="n">5</span><span class="f">السيناريو والإخراج</span><span class="o en" style="text-align:right">Commercial Storyboard</span><span class="a en" style="text-align:right">IM202</span></div>
+    <div class="wk"><span class="n">6</span><span class="f">توليد الفيديو</span><span class="o en" style="text-align:right">AI Video Scenes</span><span class="a en" style="text-align:right">IM202</span></div>
+    <div class="wk"><span class="n">7</span><span class="f">التحريك والصوت</span><span class="o en" style="text-align:right">Animated Ad</span><span class="a en" style="text-align:right">IM202</span></div>
+    <div class="wk hl"><span class="g">G3</span><span class="n">8</span><span class="f">المونتاج</span><span class="o en" style="text-align:right">Commercial Video</span><span class="a">بوابة الإنتاج المتقدم + استبيان الميول</span></div>
+    <div class="wk"><span class="n">9</span><span class="f">المحتوى</span><span class="o en" style="text-align:right">30-Day Calendar</span><span class="a en" style="text-align:right">IM204</span></div>
+    <div class="wk"><span class="n">10</span><span class="f">صفحات الهبوط وSEO</span><span class="o en" style="text-align:right">Landing Page</span><span class="a en" style="text-align:right">IM206</span></div>
+    <div class="wk"><span class="n">11</span><span class="f">الحملات المدفوعة</span><span class="o en" style="text-align:right">Campaign Setup</span><span class="a en" style="text-align:right">IM205</span></div>
+    <div class="wk"><span class="n">12</span><span class="f">الإطلاق والاختبار</span><span class="o en" style="text-align:right">A/B Testing</span><span class="a en" style="text-align:right">IM205</span></div>
+    <div class="wk"><span class="n">13</span><span class="f">التحليل والتحسين</span><span class="o en" style="text-align:right">Performance Report</span><span class="a en" style="text-align:right">IM205 · IM207</span></div>
+    <div class="wk"><span class="n">14</span><span class="f">الأتمتة</span><span class="o en" style="text-align:right">Automation Workflow</span><span class="a en" style="text-align:right">IM207</span></div>
+    <div class="wk hl"><span class="n">15</span><span class="f">ورش التخصصات</span><span class="o en" style="text-align:right">Specialization Tasters</span><span class="a">IM209: تجربة A وB وC</span></div>
+    <div class="wk hl"><span class="g">G4</span><span class="n">16</span><span class="f">الملف والعرض واختيار التخصص</span><span class="o en" style="text-align:right">Campaign Portfolio &amp; Defense</span><span class="a">بوابة Integrated Campaign</span></div>
+  </div>
+</section>
+
+<!-- 13 ADS MODEL -->
+<section class="slide" data-level="p1" data-title="نموذج الإعلانات المدفوعة">
+  <header class="s-head"><span class="tag">P1 الإعلانات المدفوعة</span><h2>رصيد محدود من الأكاديمية، وتقييم لا يتأثر بحجم الإنفاق</h2><p>الطالب الذي ينفق من ماله لا يحصل على درجة أعلى. التقييم يقيس المنهج: الإعداد والتتبع والاختبار والتحليل.</p></header>
+  <div class="s-body row2 wide-r">
+    <ol class="steps">
+      <li><span class="k">1</span><span class="t"><b>المحاكاة · مجاني</b><span class="muted">إعداد الحملات وقراءة التقارير والتحسين على بيانات جاهزة. هذا أساس تقييم IM205.</span></span></li>
+      <li><span class="k">2</span><span class="t"><b>الحملة الحية · رصيد الأكاديمية</b><span class="muted">في P1 تعمل فرق من 3 طلاب برصيد مشترك. في التخصص C يحصل كل طالب على رصيد فردي، ويذهب له معظم الرصيد.</span></span></li>
+      <li><span class="k">3</span><span class="t"><b>ميزانية العميل · AG302</b><span class="muted">حملات حقيقية ضمن مشاريع العملاء في P2، وتدخل في دراسة الحالة.</span></span></li>
+      <li><span class="k">4</span><span class="t"><b>الإنفاق الشخصي · اختياري</b><span class="muted">لا يدخل في الدرجة. بإقرار موقّع، وسقف شهري مقترح، وعلى منتج الطالب أو علامته فقط.</span></span></li>
+    </ol>
+    <div class="stack lg">
+      <h3>مختبر المحاكاة: مثال الحساب</h3>
+      <div class="calc">
+        <div class="cell"><b>$300</b><span>الميزانية</span></div><span class="op">÷</span>
+        <div class="cell"><b>$0.50</b><span>تكلفة النقرة</span></div><span class="op">=</span>
+        <div class="cell"><b>600</b><span>نقرة</span></div>
+      </div>
+      <div class="calc">
+        <div class="cell"><b>3%</b><span>معدل التحويل</span></div><span class="op">→</span>
+        <div class="cell"><b>18</b><span>طلباً</span></div><span class="op">×</span>
+        <div class="cell"><b>$50</b><span>متوسط الطلب</span></div><span class="op">=</span>
+        <div class="cell"><b>$900</b><span>إيراد افتراضي</span></div>
+      </div>
+      <div class="calc"><div class="cell res"><b>ROAS 3.0</b><span>900 ÷ 300. محاكاة للتدريب، وليست ضماناً لربح أو ربحاً صافياً</span></div></div>
+      <div class="panel"><span class="check wait">قيد التحديد</span><span class="small">قيمة الرصيد لكل فريق في P1 ولكل طالب في التخصص C</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 CHOOSING SPECIALIZATION -->
+<section class="slide" data-level="p1" data-title="اختيار التخصص">
+  <header class="s-head"><span class="tag">الانتقال إلى P2</span><h2>اختيار التخصص مبني على تجربة فعلية</h2><p>يختار الطالب في نهاية الشهر الثامن، بعد أن جرّب العمل في التخصصات الثلاثة.</p></header>
+  <div class="s-body row2">
+    <div class="stack lg">
+      <h3>معايير الاختيار</h3>
+      <div class="stackbar">
+        <span style="width:40%;background:var(--c)">نتائج المشاريع 40%</span>
+        <span style="width:25%;background:var(--m)">القدرات 25%</span>
+        <span style="width:25%;background:var(--y);color:#1d1a10">رغبة الطالب 25%</span>
+        <span style="width:10%;background:var(--ink)">المدربون</span>
+      </div>
+      <p class="note">تقييم المدربين 10%. الأوزان مقترحة وقابلة للاعتماد.</p>
+      <div class="row3" style="gap:.8cqw">
+        <div class="panel lvl-p2"><span class="lv-code" style="font-size:var(--t-h1);color:var(--y-ink)">A</span><span class="small">التصميم والهوية البصرية والإخراج الفني</span></div>
+        <div class="panel lvl-p2"><span class="lv-code" style="font-size:var(--t-h1);color:var(--y-ink)">B</span><span class="small">صناعة الفيديو والأفلام بالذكاء الاصطناعي</span></div>
+        <div class="panel lvl-p2"><span class="lv-code" style="font-size:var(--t-h1);color:var(--y-ink)">C</span><span class="small">التسويق بالأداء والنمو الرقمي</span></div>
+      </div>
+    </div>
+    <div class="stack lg">
+      <ol class="steps">
+        <li><span class="k">G3</span><span class="t"><b>الشهر 6 · استبيان ميول مبكر</b><span class="muted">تعرف الإدارة التوزيع المتوقع فتخطط للمدربين قبل شهرين.</span></span></li>
+        <li><span class="k">W15</span><span class="t"><b>الأسبوع 15 من P1 · ورش IM209</b><span class="muted">20 ساعة عملية موزعة على التخصصات الثلاثة.</span></span></li>
+        <li><span class="k">G4</span><span class="t"><b>نهاية الشهر 8 · القرار</b><span class="muted">يُعلن التخصص بعد الدفاع عن الحملة.</span></span></li>
+      </ol>
+      <div class="panel"><h3>سعة كل تخصص</h3><p class="xs muted">حد أدنى وحد أقصى لكل تخصص بحسب عدد المدربين، مثلاً من 8 إلى 20 طالباً. عند امتلاء التخصص يُحسم القبول بالمعيار المرجّح.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 P2 DIVIDER -->
+<section class="slide" data-level="p2" data-title="P2 التخصص والوكالة">
+  <div class="divider">
+    <div class="stack lg">
+      <div class="lv-code">P2</div>
+      <p class="d-title">التخصص المهني وبناء الوكالة</p>
+      <p class="d-en en" style="text-align:right">Professional Specialization &amp; Agency Building</p>
+      <div class="meta"><div><strong>400</strong><span>ساعة</span></div><div><strong>16</strong><span>أسبوعاً</span></div><div><strong>9–12</strong><span>الشهور</span></div><div><strong>90%</strong><span>تطبيق</span></div></div>
+      <table class="tablelite">
+        <thead><tr><th>المكوّن</th><th class="n">نظري</th><th class="n">عملي</th><th class="n">الإجمالي</th></tr></thead>
+        <tbody>
+          <tr><td>تخصص واحد</td><td class="n">20</td><td class="n">180</td><td class="n">200</td></tr>
+          <tr><td>مشاريع العملاء والتدريب الميداني</td><td class="n">0</td><td class="n">120</td><td class="n">120</td></tr>
+          <tr><td>إدارة الوكالة</td><td class="n">10</td><td class="n">30</td><td class="n">40</td></tr>
+          <tr><td>الإنجليزية والتوظيف</td><td class="n">10</td><td class="n">30</td><td class="n">40</td></tr>
+          <tr class="tot"><td>المجموع</td><td class="n">40</td><td class="n">360</td><td class="n">400</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="ثلاثة مسارات تخصص تلتقي في وكالة الطالب">
+        <g transform="rotate(-4 115 165)">
+          <rect x="30" y="40" width="170" height="250" rx="8" class="fs st"/>
+          <polygon points="70,110 115,90 160,110 115,130" class="fy"/><polygon points="70,110 115,130 115,200 70,180" class="fm"/><polygon points="115,130 160,110 160,180 115,200" class="fm" opacity=".65"/>
+          <rect x="80" y="140" width="24" height="14" class="fs" transform="skewY(24)" opacity=".0"/>
+          <text x="115" y="240" text-anchor="middle" font-size="34" class="fi disp">A</text>
+          <text x="115" y="268" text-anchor="middle" font-size="12" class="fmu" direction="rtl">التصميم والهوية</text>
+        </g>
+        <g>
+          <rect x="215" y="34" width="170" height="250" rx="8" class="fs st"/>
+          <rect x="235" y="70" width="130" height="110" rx="4" class="fi"/>
+          <g class="fs"><rect x="241" y="76" width="8" height="8" rx="1"/><rect x="241" y="96" width="8" height="8" rx="1"/><rect x="241" y="116" width="8" height="8" rx="1"/><rect x="241" y="136" width="8" height="8" rx="1"/><rect x="241" y="156" width="8" height="8" rx="1"/><rect x="351" y="76" width="8" height="8" rx="1"/><rect x="351" y="96" width="8" height="8" rx="1"/><rect x="351" y="116" width="8" height="8" rx="1"/><rect x="351" y="136" width="8" height="8" rx="1"/><rect x="351" y="156" width="8" height="8" rx="1"/></g>
+          <rect x="256" y="80" width="88" height="90" rx="2" class="tc"/><path d="M290 108 L318 125 L290 142Z" class="fc"/>
+          <text x="300" y="234" text-anchor="middle" font-size="34" class="fi disp">B</text>
+          <text x="300" y="262" text-anchor="middle" font-size="12" class="fmu" direction="rtl">الفيديو بالذكاء الاصطناعي</text>
+        </g>
+        <g transform="rotate(4 485 165)">
+          <rect x="400" y="40" width="170" height="250" rx="8" class="fs st"/>
+          <polygon points="425,80 545,80 530,108 440,108" class="fy"/><polygon points="440,114 530,114 515,142 455,142" class="fy" opacity=".7"/><polygon points="455,148 515,148 500,176 470,176" class="fy" opacity=".45"/><polygon points="470,182 500,182 492,204 478,204" class="fm"/>
+          <text x="485" y="240" text-anchor="middle" font-size="34" class="fi disp">C</text>
+          <text x="485" y="268" text-anchor="middle" font-size="12" class="fmu" direction="rtl">الأداء والنمو</text>
+        </g>
+        <path d="M115 300 C115 318 300 306 300 330 M485 300 C485 318 300 306 300 330 M300 290 V330" class="nf sk-i" stroke-width="1.5" stroke-dasharray="4 4" opacity=".5"/>
+        <rect x="60" y="330" width="480" height="76" rx="8" class="fi"/>
+        <circle cx="500" cy="368" r="18" class="fy"/><circle cx="500" cy="368" r="7" class="fi"/>
+        <text x="290" y="364" text-anchor="middle" font-size="20" class="fs disp" direction="rtl">وكالتك الإبداعية</text>
+        <text x="290" y="388" text-anchor="middle" font-size="11" class="fp" opacity=".75" direction="rtl">تخصص واحد + عملاء حقيقيون + خطة إطلاق</text>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>تخصص موثّق ووكالة جاهزة للتشغيل</b></span><span>يدرس الطالب تخصصاً واحداً</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 16 P2 WEEK DISTRIBUTION -->
+<section class="slide" data-level="p2" data-title="P2 توزيع الأسابيع">
+  <header class="s-head"><span class="tag">P2 الفصل الثالث</span><h2>يتحوّل الوزن تدريجياً من التخصص إلى العميل</h2><p>25 ساعة أسبوعياً، والتدريب الميداني يسير بالتوازي مع التخصص داخل TAQAT Creative Studio أو لدى الشركات الشريكة.</p></header>
+  <div class="s-body row2 wide-r">
+    <div class="stack lg">
+      <div class="legend"><span><i class="sw" style="background:var(--y)"></i>تخصص</span><span><i class="sw" style="background:var(--c)"></i>مشروع العميل</span><span><i class="sw" style="background:var(--m)"></i>الوكالة</span><span><i class="sw" style="background:var(--muted)"></i>الإنجليزية</span></div>
+      <div class="stack"><div class="small"><b>الأسابيع 1–8</b> <span class="muted">· بناء الكفاءات التخصصية واكتشاف العميل</span></div>
+        <div class="stackbar"><span style="width:60%;background:var(--y);color:#1d1a10">15</span><span style="width:20%;background:var(--c)">5</span><span style="width:12%;background:var(--m)">3</span><span style="width:8%;background:var(--muted)">2</span></div></div>
+      <div class="stack"><div class="small"><b>الأسابيع 9–12</b> <span class="muted">· الإنتاج والاختبار</span></div>
+        <div class="stackbar"><span style="width:48%;background:var(--y);color:#1d1a10">12</span><span style="width:32%;background:var(--c)">8</span><span style="width:12%;background:var(--m)">3</span><span style="width:8%;background:var(--muted)">2</span></div></div>
+      <div class="stack"><div class="small"><b>الأسابيع 13–16</b> <span class="muted">· التحسين والتسليم ودراسة الحالة والدفاع النهائي</span></div>
+        <div class="stackbar"><span style="width:32%;background:var(--y);color:#1d1a10">8</span><span style="width:48%;background:var(--c)">12</span><span style="width:4%;background:var(--m)"></span><span style="width:16%;background:var(--muted)">4</span></div></div>
+      <p class="note">المجموع على 16 أسبوعاً: تخصص 200، عميل 120، وكالة 40، إنجليزية 40 = 400 ساعة.</p>
+    </div>
+    <div class="stack lg">
+      <div class="panel"><h3>مسار بديل للعملاء</h3><p class="xs muted">إذا لم يتوفر عميل حقيقي حتى الأسبوع 4، يعمل الطالب على Brief حقيقي من مؤسسة شريكة أو مبادرة مجتمعية. المحاكاة لا تُسجَّل إنجازاً لعميل حقيقي.</p></div>
+      <div class="panel"><h3>فرق متعددة التخصصات</h3><p class="xs muted">يمكن تشكيل فرق تجمع A وB وC على عميل واحد، مع توثيق مساهمة كل طالب وتقييمها فردياً.</p></div>
+      <div class="panel"><h3>مصادر المشاريع</h3><p class="xs muted">طاقات وBrightGaza والشركاء، بإشراف مهني وموافقة العميل على النشر.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 TRACK A -->
+<section class="slide" data-level="p2" data-title="التخصص A">
+  <header class="s-head"><span class="tag">P2 التخصص A · 200 ساعة</span><h2 class="en" style="text-align:right">Advanced Creative Design &amp; Branding</h2></header>
+  <div class="s-body row2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)">
+    <div class="stack lg">
+      <p class="small">مصمم متخصص في الهوية والإخراج الفني وأنظمة التصميم والتغليف والإعلانات.</p>
+      <div class="ctable" style="grid-template-columns:auto minmax(0,1.6fr) minmax(0,.8fr) auto">
+        <div><span class="code">CD301</span><span class="en small">Advanced Brand Strategy</span><span class="bar"><i style="--w:75%;--t:17%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">CD302</span><span class="en small">Visual Identity Systems</span><span class="bar"><i style="--w:100%;--t:12.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span></div>
+        <div><span class="code">CD303</span><span class="en small">Creative Direction &amp; Advertising Design</span><span class="bar"><i style="--w:100%;--t:12.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span></div>
+        <div><span class="code">CD304</span><span class="en small">Packaging &amp; Editorial Design</span><span class="bar"><i style="--w:75%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">CD305</span><span class="en small">AI-Assisted Design Systems</span><span class="bar"><i style="--w:75%;--t:7%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">CD306</span><span class="en small">Advanced Design Portfolio Studio</span><span class="bar"><i style="--w:75%;--t:0%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+      </div>
+      <div class="chips"><span class="chip ar k">إعادة بناء علامة تجارية</span><span class="chip ar k">حملة بإخراج فني متعدد القنوات</span><span class="chip ar k">نظام تغليف ومطبوعات</span><span class="chip ar k">Portfolio بأربع دراسات حالة</span></div>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="تغليف منتج، ملصق إعلاني، صفحات مجلة ولوحة ألوان">
+        <rect x="30" y="30" width="150" height="220" rx="4" class="fi"/>
+        <circle cx="105" cy="115" r="52" class="fm"/><circle cx="105" cy="115" r="26" class="fy"/>
+        <text x="105" y="205" text-anchor="middle" font-size="26" class="fs disp" direction="rtl">إطلاق</text>
+        <rect x="60" y="222" width="90" height="5" rx="2.5" class="fp" opacity=".5"/>
+        <polygon points="210,110 310,66 410,110 310,154" class="fy"/>
+        <polygon points="210,110 310,154 310,300 210,256" class="fm"/>
+        <polygon points="310,154 410,110 410,256 310,300" class="fm" opacity=".62"/>
+        <polygon points="232,150 288,174 288,214 232,190" class="fs"/>
+        <polygon points="240,162 280,179 280,186 240,169" class="fm"/>
+        <polygon points="330,160 390,134 390,148 330,174" class="fs" opacity=".55"/>
+        <ellipse cx="310" cy="318" rx="112" ry="10" class="fl" opacity=".7"/>
+        <rect x="430" y="40" width="72" height="150" rx="2" class="fs st"/><rect x="506" y="40" width="72" height="150" rx="2" class="fs st"/>
+        <rect x="438" y="50" width="56" height="70" class="ty"/><circle cx="466" cy="85" r="18" class="fy"/>
+        <rect x="438" y="130" width="56" height="6" class="fl"/><rect x="438" y="142" width="44" height="6" class="fl"/><rect x="438" y="154" width="50" height="6" class="fl"/>
+        <rect x="514" y="50" width="56" height="12" class="fi"/><rect x="514" y="72" width="56" height="5" class="fl"/><rect x="514" y="82" width="50" height="5" class="fl"/><rect x="514" y="92" width="56" height="5" class="fl"/><rect x="514" y="102" width="40" height="5" class="fl"/>
+        <rect x="514" y="118" width="56" height="60" class="tm"/>
+        <text x="504" y="210" text-anchor="middle" font-size="11" class="fmu" direction="rtl">تصميم تحريري</text>
+        <rect x="30" y="300" width="160" height="96" rx="4" class="fs st"/><path d="M30 300 L110 350 L190 300" class="nf" stroke="var(--line)" stroke-width="1.5"/>
+        <circle cx="160" cy="372" r="9" class="fm"/>
+        <g><rect x="440" y="250" width="40" height="40" class="fm"/><rect x="484" y="250" width="40" height="40" class="fy"/><rect x="528" y="250" width="40" height="40" class="fi"/>
+        <rect x="440" y="294" width="40" height="40" class="tm"/><rect x="484" y="294" width="40" height="40" class="ty"/><rect x="528" y="294" width="40" height="40" class="fl"/></g>
+        <text x="504" y="356" text-anchor="middle" font-size="11" class="fmu" direction="rtl">نظام الألوان</text>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>نظام تغليف وحملة وهوية</b></span><span>مثال توضيحي</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 18 TRACK B -->
+<section class="slide" data-level="p2" data-title="التخصص B">
+  <header class="s-head"><span class="tag">P2 التخصص B · 200 ساعة</span><h2 class="en" style="text-align:right">AI Filmmaking &amp; Advanced Video Production</h2></header>
+  <div class="s-body row2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)">
+    <div class="stack lg">
+      <p class="small">منتج مرئي متخصص في السرد والإخراج والتوليد المتّسق والمونتاج والألوان والصوت والتحريك والإنتاج الهجين.</p>
+      <div class="ctable" style="grid-template-columns:auto minmax(0,1.6fr) minmax(0,.8fr) auto">
+        <div><span class="code">VP301</span><span class="en small">Cinematic Storytelling &amp; Directing</span><span class="bar"><i style="--w:60%;--t:17%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">VP302</span><span class="en small">Advanced AI Filmmaking</span><span class="bar"><i style="--w:100%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">50</span></div>
+        <div><span class="code">VP303</span><span class="en small">Advanced Editing &amp; Color Grading</span><span class="bar"><i style="--w:60%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">VP304</span><span class="en small">Motion Graphics &amp; Animation</span><span class="bar"><i style="--w:80%;--t:7.5%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">40</span></div>
+        <div><span class="code">VP305</span><span class="en small">Sound Design &amp; Visual Effects</span><span class="bar"><i style="--w:40%;--t:20%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">20</span></div>
+        <div><span class="code">VP306</span><span class="en small">Commercial Film Production Studio</span><span class="bar"><i style="--w:60%;--t:0%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+      </div>
+      <div class="chips"><span class="chip ar k">إعلان منتج 30–60 ث</span><span class="chip ar k">فيلم قصير بالذكاء الاصطناعي 2–3 د</span><span class="chip ar k">فيديو Motion Graphics</span><span class="chip ar k">مشروع هجين</span><span class="chip ar k">Showreel</span></div>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="واجهة مونتاج: شاشة معاينة وخط زمني بمسارات فيديو وصوت">
+        <rect x="10" y="10" width="580" height="400" rx="10" class="fi"/>
+        <rect x="26" y="26" width="110" height="172" rx="4" class="fp" opacity=".12"/>
+        <rect x="36" y="36" width="42" height="28" rx="2" class="fc" opacity=".8"/><rect x="84" y="36" width="42" height="28" rx="2" class="fm" opacity=".8"/>
+        <rect x="36" y="70" width="42" height="28" rx="2" class="fy" opacity=".8"/><rect x="84" y="70" width="42" height="28" rx="2" class="fc" opacity=".5"/>
+        <rect x="36" y="104" width="42" height="28" rx="2" class="fm" opacity=".5"/><rect x="84" y="104" width="42" height="28" rx="2" class="fy" opacity=".5"/>
+        <rect x="150" y="26" width="300" height="172" rx="3" class="tc"/>
+        <circle cx="390" cy="74" r="22" class="fy"/>
+        <polygon points="150,198 226,112 280,160 336,96 450,198" class="fm" opacity=".9"/>
+        <polygon points="150,198 210,150 260,198" class="fi" opacity=".25"/>
+        <rect x="150" y="26" width="300" height="14" class="fi" opacity=".55"/><rect x="150" y="184" width="300" height="14" class="fi" opacity=".55"/>
+        <text x="300" y="216" text-anchor="middle" font-size="11" class="fp" style="font-variant-numeric:tabular-nums">00:00:42:12</text>
+        <g class="nf" stroke="var(--paper)" stroke-opacity=".45" stroke-width="1.5"><circle cx="490" cy="70" r="18"/><circle cx="532" cy="70" r="18"/><circle cx="511" cy="128" r="18"/></g>
+        <circle cx="494" cy="64" r="3" class="fc"/><circle cx="528" cy="76" r="3" class="fm"/><circle cx="515" cy="124" r="3" class="fy"/>
+        <rect x="26" y="230" width="548" height="1" class="fp" opacity=".2"/>
+        <text x="60" y="260" text-anchor="middle" font-size="11" class="fp" opacity=".75">V2</text>
+        <text x="60" y="298" text-anchor="middle" font-size="11" class="fp" opacity=".75">V1</text>
+        <text x="60" y="340" text-anchor="middle" font-size="11" class="fp" opacity=".75">A1</text>
+        <text x="60" y="376" text-anchor="middle" font-size="11" class="fp" opacity=".75">A2</text>
+        <rect x="200" y="242" width="90" height="28" rx="3" class="fm"/><rect x="330" y="242" width="60" height="28" rx="3" class="fm" opacity=".8"/>
+        <rect x="110" y="278" width="120" height="32" rx="3" class="fc"/><rect x="234" y="278" width="150" height="32" rx="3" class="fc" opacity=".8"/><rect x="388" y="278" width="100" height="32" rx="3" class="fc"/><rect x="492" y="278" width="80" height="32" rx="3" class="fc" opacity=".8"/>
+        <g id="wave"></g>
+        <rect x="110" y="362" width="462" height="24" rx="3" class="fy" opacity=".85"/>
+        <path d="M300 236 V394" stroke="var(--m)" stroke-width="2"/><path d="M293 230 H307 L300 239Z" class="fm"/>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>إعلان وفيلم قصير وShowreel</b></span><span>مثال توضيحي</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 19 TRACK C -->
+<section class="slide" data-level="p2" data-title="التخصص C">
+  <header class="s-head"><span class="tag">P2 التخصص C · 200 ساعة</span><h2 class="en" style="text-align:right">Performance Marketing &amp; Digital Growth</h2></header>
+  <div class="s-body row2" style="grid-template-columns:minmax(0,1fr) minmax(0,1.05fr)">
+    <div class="stack lg">
+      <p class="small">متخصص نمو وإعلانات مدفوعة وتحليل بيانات وتحسين التحويل والاستحواذ على العملاء وSEO والأتمتة. يحصل على الجزء الأكبر من رصيد الإعلانات.</p>
+      <div class="ctable" style="grid-template-columns:auto minmax(0,1.6fr) minmax(0,.8fr) auto">
+        <div><span class="code">DM301</span><span class="en small">Advanced Marketing &amp; Growth Strategy</span><span class="bar"><i style="--w:60%;--t:17%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">DM302</span><span class="en small">Advanced Meta &amp; Google Advertising</span><span class="bar"><i style="--w:100%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">50</span></div>
+        <div><span class="code">DM303</span><span class="en small">Conversion Rate Optimization</span><span class="bar"><i style="--w:60%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">DM304</span><span class="en small">SEO &amp; Content Growth</span><span class="bar"><i style="--w:60%;--t:10%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">DM305</span><span class="en small">Marketing Analytics &amp; Attribution</span><span class="bar"><i style="--w:60%;--t:13%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+        <div><span class="code">DM306</span><span class="en small">AI Marketing Automation &amp; CRM</span><span class="bar"><i style="--w:60%;--t:0%"><b class="th"></b><b class="pr"></b></i></span><span class="hrs">30</span></div>
+      </div>
+      <div class="chips"><span class="chip ar k">استراتيجية نمو واستحواذ</span><span class="chip ar k">حملة متعددة القنوات</span><span class="chip ar k">تجربة تحسين صفحة هبوط</span><span class="chip ar k">لوحة أداء وAttribution</span><span class="chip ar k">سير عملاء محتملين وCRM</span></div>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="لوحة أداء: مؤشرات رئيسية، قمع تحويل، إسناد حسب القناة، ومنحنى النمو">
+        <rect x="10" y="10" width="580" height="400" rx="10" class="fs st"/>
+        <g>
+          <rect x="434" y="26" width="140" height="64" rx="6" class="fp"/><text x="504" y="48" text-anchor="middle" font-size="11" class="fmu">ROAS</text><text x="504" y="76" text-anchor="middle" font-size="22" class="fi disp">3.4</text>
+          <rect x="290" y="26" width="138" height="64" rx="6" class="fp"/><text x="359" y="48" text-anchor="middle" font-size="11" class="fmu">CPA</text><text x="359" y="76" text-anchor="middle" font-size="22" class="fi disp">$12.8</text>
+          <rect x="146" y="26" width="138" height="64" rx="6" class="fp"/><text x="215" y="48" text-anchor="middle" font-size="11" class="fmu">CVR</text><text x="215" y="76" text-anchor="middle" font-size="22" class="fi disp">3.1%</text>
+          <rect x="26" y="26" width="114" height="64" rx="6" class="ty"/><text x="83" y="48" text-anchor="middle" font-size="11" class="fmu">Leads</text><text x="83" y="76" text-anchor="middle" font-size="22" class="fi disp">214</text>
+        </g>
+        <polygon points="354,112 574,112 554,164 374,164" class="fy"/>
+        <polygon points="374,170 554,170 534,222 394,222" class="fy" opacity=".72"/>
+        <polygon points="394,228 534,228 514,280 414,280" class="fy" opacity=".48"/>
+        <polygon points="414,286 514,286 494,338 434,338" class="fm"/>
+        <text x="464" y="143" text-anchor="middle" font-size="12" class="fi" direction="rtl">ظهور 120k</text>
+        <text x="464" y="201" text-anchor="middle" font-size="12" class="fi" direction="rtl">نقرات 3.6k</text>
+        <text x="464" y="259" text-anchor="middle" font-size="12" class="fi" direction="rtl">عملاء محتملون 420</text>
+        <text x="464" y="317" text-anchor="middle" font-size="12" class="fs" direction="rtl">مبيعات 64</text>
+        <text x="464" y="372" text-anchor="middle" font-size="11" class="fmu" direction="rtl">قمع التحويل</text>
+        <text x="180" y="122" text-anchor="middle" font-size="11" class="fmu" direction="rtl">الإسناد حسب القناة</text>
+        <text x="40" y="146" font-size="11" class="fi">Meta</text><rect x="100" y="136" width="220" height="14" rx="2" class="fc"/>
+        <text x="40" y="172" font-size="11" class="fi">Google</text><rect x="100" y="162" width="160" height="14" rx="2" class="fc" opacity=".75"/>
+        <text x="40" y="198" font-size="11" class="fi">SEO</text><rect x="100" y="188" width="100" height="14" rx="2" class="fc" opacity=".5"/>
+        <text x="40" y="224" font-size="11" class="fi">Email</text><rect x="100" y="214" width="60" height="14" rx="2" class="fc" opacity=".35"/>
+        <rect x="26" y="246" width="310" height="150" rx="6" class="fp"/>
+        <rect x="40" y="290" width="282" height="1" class="fl"/><rect x="40" y="325" width="282" height="1" class="fl"/><rect x="40" y="360" width="282" height="1" class="fl"/>
+        <polygon points="40,370 80,362 120,354 160,340 200,330 240,312 280,296 322,278 322,384 40,384" class="ty"/>
+        <polyline points="40,370 80,362 120,354 160,340 200,330 240,312 280,296 322,278" class="nf" stroke="var(--y)" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="322" cy="278" r="5" class="fy"/>
+        <text x="181" y="268" text-anchor="middle" font-size="11" class="fmu" direction="rtl">نمو العملاء المحتملين أسبوعياً</text>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>لوحة أداء وتحليل Attribution</b></span><span>أرقام توضيحية</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 20 SHARED COURSES -->
+<section class="slide" data-level="p2" data-title="P2 المقررات المشتركة">
+  <header class="s-head"><span class="tag">P2 المقررات المشتركة · 200 ساعة لجميع التخصصات</span><h2>الوكالة والعميل والجاهزية المهنية</h2></header>
+  <div class="s-body row3">
+    <div class="stack">
+      <h3><span class="code">AG301</span> إدارة الوكالة وريادة الأعمال <span class="muted xs num">40 س</span></h3>
+      <div class="hbars" style="gap:.5cqw">
+        <div class="hb"><span class="xs">نموذج العمل</span><span class="track"><i style="--w:62%"></i></span><span class="v xs">5</span></div>
+        <div class="hb"><span class="xs">الخدمات والتموضع</span><span class="track"><i style="--w:62%"></i></span><span class="v xs">5</span></div>
+        <div class="hb"><span class="xs">التسعير والمالية</span><span class="track"><i style="--w:100%"></i></span><span class="v xs">8</span></div>
+        <div class="hb"><span class="xs">العروض والعقود</span><span class="track"><i style="--w:87%"></i></span><span class="v xs">7</span></div>
+        <div class="hb"><span class="xs">إدارة المشاريع</span><span class="track"><i style="--w:87%"></i></span><span class="v xs">7</span></div>
+        <div class="hb"><span class="xs">تطوير الأعمال</span><span class="track"><i style="--w:62%"></i></span><span class="v xs">5</span></div>
+        <div class="hb"><span class="xs">إطلاق الوكالة</span><span class="track"><i style="--w:37%"></i></span><span class="v xs">3</span></div>
+      </div>
+      <p class="note">المخرج: نموذج عمل، قائمة خدمات، باقات وأسعار، عرض وعقد، نظام عمل، خطة استقطاب وإطلاق.</p>
+    </div>
+    <div class="stack">
+      <h3><span class="code">AG302</span> مشاريع العملاء والتدريب الميداني <span class="muted xs num">120 س</span></h3>
+      <div class="hbars" style="gap:.5cqw">
+        <div class="hb"><span class="xs">اكتشاف الاحتياجات</span><span class="track"><i style="--w:20%"></i></span><span class="v xs">10</span></div>
+        <div class="hb"><span class="xs">البحث والتخطيط</span><span class="track"><i style="--w:30%"></i></span><span class="v xs">15</span></div>
+        <div class="hb"><span class="xs">الإنتاج الإبداعي</span><span class="track"><i style="--w:100%"></i></span><span class="v xs">50</span></div>
+        <div class="hb"><span class="xs">المراجعة والجودة</span><span class="track"><i style="--w:30%"></i></span><span class="v xs">15</span></div>
+        <div class="hb"><span class="xs">الإطلاق والمتابعة</span><span class="track"><i style="--w:30%"></i></span><span class="v xs">15</span></div>
+        <div class="hb"><span class="xs">التسليم ودراسة الحالة</span><span class="track"><i style="--w:30%"></i></span><span class="v xs">15</span></div>
+      </div>
+      <p class="note">ساعات عملية بالكامل، بإشراف مهني وموافقة العميل على النشر.</p>
+    </div>
+    <div class="stack">
+      <h3><span class="code">AG303</span> الإنجليزية والتوظيف <span class="muted xs num">40 س</span></h3>
+      <div class="hbars" style="gap:.5cqw">
+        <div class="hb"><span class="xs">إنجليزية الصناعات الإبداعية</span><span class="track"><i style="--w:100%"></i></span><span class="v xs">10</span></div>
+        <div class="hb"><span class="xs">اجتماعات العملاء والعروض</span><span class="track"><i style="--w:80%"></i></span><span class="v xs">8</span></div>
+        <div class="hb"><span class="xs">Portfolio والعلامة الشخصية</span><span class="track"><i style="--w:80%"></i></span><span class="v xs">8</span></div>
+        <div class="hb"><span class="xs">CV وLinkedIn وBrightGaza</span><span class="track"><i style="--w:40%"></i></span><span class="v xs">4</span></div>
+        <div class="hb"><span class="xs">المقابلات والتقييمات</span><span class="track"><i style="--w:50%"></i></span><span class="v xs">5</span></div>
+        <div class="hb"><span class="xs">العمل الحر والعملاء الدوليون</span><span class="track"><i style="--w:50%"></i></span><span class="v xs">5</span></div>
+      </div>
+      <p class="note">المخرج: ملف مهني بالإنجليزية، عرض خدمات، ومحاكاة مقابلة.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 21 GRADUATION DIVIDER -->
+<section class="slide" data-level="k" data-title="مشروع التخرج">
+  <div class="divider">
+    <div class="stack lg">
+      <span class="tag">مشروع التخرج</span>
+      <p class="d-title en" style="text-align:right">Launch Your Own Creative Agency</p>
+      <p class="d-en">ثلاثة أجزاء يسلّمها الطالب في الشهر 12، ويدافع عنها فردياً عند البوابة G6.</p>
+      <ol class="steps">
+        <li><span class="k">1</span><span class="t"><b>الوكالة</b><span class="muted xs">اسم وهوية، موقع أو Portfolio، قائمة خدمات، ثلاث باقات أسعار، عرض فني ومالي، خطة تشغيل واستقطاب لستة أشهر، نظام إدارة مشاريع.</span></span></li>
+        <li><span class="k">2</span><span class="t"><b>المشروع التخصصي</b><span class="muted xs">هوية وحملة، أو فيلم إعلاني، أو استراتيجية نمو وحملة ودراسة حالة، بحسب التخصص.</span></span></li>
+        <li><span class="k">3</span><span class="t"><b>مشروع العميل</b><span class="muted xs">ملخص احتياجات، تخطيط، إنتاج، تعديلات، تسليم، تقييم العميل، ودراسة حالة بإذن النشر.</span></span></li>
+      </ol>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="موقع وكالة الطالب: الصفحة الرئيسية، ثلاث باقات خدمات، ونماذج أعمال">
+        <rect x="10" y="10" width="580" height="400" rx="10" class="fs st"/>
+        <path d="M10 38 V20 Q10 10 20 10 H580 Q590 10 590 20 V38Z" class="fp"/>
+        <circle cx="574" cy="24" r="4" class="fl"/><circle cx="562" cy="24" r="4" class="fl"/><circle cx="550" cy="24" r="4" class="fl"/>
+        <circle cx="552" cy="64" r="13" class="fm"/><circle cx="552" cy="64" r="5" class="fs"/>
+        <text x="500" y="69" text-anchor="middle" font-size="14" class="fi disp" direction="rtl">استوديو نور</text>
+        <rect x="300" y="60" width="44" height="7" rx="3.5" class="fl"/><rect x="240" y="60" width="44" height="7" rx="3.5" class="fl"/><rect x="180" y="60" width="44" height="7" rx="3.5" class="fl"/>
+        <rect x="30" y="52" width="100" height="26" rx="13" class="fi"/><text x="80" y="69" text-anchor="middle" font-size="11" class="fs" direction="rtl">اطلب عرضاً</text>
+        <text x="300" y="128" text-anchor="middle" font-size="30" class="fi disp" direction="rtl">نصمم علامات تنمو</text>
+        <rect x="190" y="146" width="220" height="7" rx="3.5" class="fl"/><rect x="220" y="160" width="160" height="7" rx="3.5" class="fl"/>
+        <g>
+          <rect x="400" y="190" width="170" height="140" rx="8" class="fp"/>
+          <text x="485" y="216" text-anchor="middle" font-size="13" class="fi disp" direction="rtl">أساسية</text>
+          <rect x="440" y="230" width="90" height="12" rx="6" class="fmu" opacity=".5"/>
+          <rect x="420" y="256" width="130" height="5" rx="2.5" class="fl"/><rect x="430" y="268" width="120" height="5" rx="2.5" class="fl"/><rect x="440" y="280" width="110" height="5" rx="2.5" class="fl"/>
+          <rect x="430" y="300" width="110" height="20" rx="10" class="fs st"/>
+          <rect x="215" y="180" width="170" height="160" rx="8" class="fi"/>
+          <text x="300" y="208" text-anchor="middle" font-size="13" class="fs disp" direction="rtl">احترافية</text>
+          <rect x="255" y="222" width="90" height="12" rx="6" class="fy"/>
+          <rect x="235" y="250" width="130" height="5" rx="2.5" class="fp" opacity=".4"/><rect x="245" y="262" width="120" height="5" rx="2.5" class="fp" opacity=".4"/><rect x="255" y="274" width="110" height="5" rx="2.5" class="fp" opacity=".4"/><rect x="245" y="286" width="120" height="5" rx="2.5" class="fp" opacity=".4"/>
+          <rect x="245" y="306" width="110" height="22" rx="11" class="fy"/>
+          <rect x="30" y="190" width="170" height="140" rx="8" class="fp"/>
+          <text x="115" y="216" text-anchor="middle" font-size="13" class="fi disp" direction="rtl">متكاملة</text>
+          <rect x="70" y="230" width="90" height="12" rx="6" class="fmu" opacity=".5"/>
+          <rect x="50" y="256" width="130" height="5" rx="2.5" class="fl"/><rect x="60" y="268" width="120" height="5" rx="2.5" class="fl"/><rect x="70" y="280" width="110" height="5" rx="2.5" class="fl"/>
+          <rect x="60" y="300" width="110" height="20" rx="10" class="fs st"/>
+        </g>
+        <rect x="440" y="350" width="130" height="46" rx="4" class="tm"/><rect x="300" y="350" width="130" height="46" rx="4" class="tc"/><rect x="160" y="350" width="130" height="46" rx="4" class="ty"/><rect x="30" y="350" width="120" height="46" rx="4" class="fi" opacity=".85"/>
+        <circle cx="505" cy="373" r="11" class="fm"/><path d="M360 364 L376 373 L360 382Z" class="fc"/><rect x="210" y="362" width="30" height="22" rx="3" class="fy"/><rect x="60" y="368" width="60" height="8" rx="4" class="fs" opacity=".6"/>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>وكالة شخصية قابلة للتشغيل</b></span><span>مثال توضيحي لوكالة افتراضية</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 22 ASSESSMENT -->
+<section class="slide" data-level="k" data-title="التقييم">
+  <header class="s-head"><span class="tag">التقييم</span><h2>كيف نقيس الطالب والمشروع</h2></header>
+  <div class="s-body row2">
+    <div class="stack lg lvl-p1">
+      <h3>تقييم الفصل</h3>
+      <div class="hbars">
+        <div class="hb"><span class="small">المشروع النهائي</span><span class="track"><i style="--w:100%"></i></span><span class="v">35%</span></div>
+        <div class="hb"><span class="small">المشاريع الأسبوعية</span><span class="track"><i style="--w:71%"></i></span><span class="v">25%</span></div>
+        <div class="hb"><span class="small">المهارات الفردية</span><span class="track"><i style="--w:57%"></i></span><span class="v">20%</span></div>
+        <div class="hb"><span class="small">الفهم والدفاع</span><span class="track"><i style="--w:28.5%"></i></span><span class="v">10%</span></div>
+        <div class="hb"><span class="small">الالتزام والتوثيق</span><span class="track"><i style="--w:28.5%"></i></span><span class="v">10%</span></div>
+      </div>
+    </div>
+    <div class="stack lg lvl-p0">
+      <h3>معايير تقييم المشاريع</h3>
+      <div class="hbars">
+        <div class="hb"><span class="small">جودة التنفيذ</span><span class="track"><i style="--w:100%"></i></span><span class="v">25%</span></div>
+        <div class="hb"><span class="small">الإبداع والأصالة</span><span class="track"><i style="--w:80%"></i></span><span class="v">20%</span></div>
+        <div class="hb"><span class="small">تحقيق أهداف العميل</span><span class="track"><i style="--w:80%"></i></span><span class="v">20%</span></div>
+        <div class="hb"><span class="small">الأدوات وسير العمل</span><span class="track"><i style="--w:60%"></i></span><span class="v">15%</span></div>
+        <div class="hb"><span class="small">الاتساق البصري والتقني</span><span class="track"><i style="--w:40%"></i></span><span class="v">10%</span></div>
+        <div class="hb"><span class="small">العرض والتوثيق والتسليم</span><span class="track"><i style="--w:40%"></i></span><span class="v">10%</span></div>
+      </div>
+      <p class="note">في التسويق تُضاف معايير دقة القياس وإعداد الحملات وتحليل النتائج وكفاءة الميزانية. لا يُقاس النجاح بالمبيعات وحدها.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23 PASS & GATES -->
+<section class="slide" data-level="k" data-title="شروط النجاح والبوابات">
+  <header class="s-head"><span class="tag">ضمان الجودة</span><h2>حد نجاح مرتفع، ودعم يمنع التسرّب</h2></header>
+  <div class="s-body row2">
+    <div class="stack lg">
+      <table class="tablelite">
+        <thead><tr><th>شرط الانتقال</th><th>القيمة</th></tr></thead>
+        <tbody>
+          <tr><td>المعدل الأدنى في كل فصل</td><td><b>80%</b></td></tr>
+          <tr><td>الحضور</td><td><b>85%</b></td></tr>
+          <tr><td>الكفاءات الإلزامية</td><td>ناجح / غير ناجح، ولا يعوّضها المعدل</td></tr>
+          <tr><td>المشاريع والمناقشة الفردية</td><td>تسليم كامل</td></tr>
+          <tr><td>إعادة التقييم</td><td>مرتان خلال أسبوعين</td></tr>
+          <tr><td>مرتبة التميّز</td><td>90% فأكثر</td></tr>
+        </tbody>
+      </table>
+      <div class="panel"><h3>آلية الدعم</h3><p class="xs muted">إنذار مبكر لكل طالب أقل من 80% في الأسبوع 6 أو عند G1، وخطة دعم فردية، وساعتا دعم أسبوعياً مع مشرف الاستوديو خارج الـ25 ساعة.</p></div>
+    </div>
+    <ol class="steps">
+      <li class="lvl-p0"><span class="k">G1</span><span class="t"><b>الشهر 2</b><span class="muted">أساسيات التصميم والهوية</span></span></li>
+      <li class="lvl-p0"><span class="k">G2</span><span class="t"><b>الشهر 4</b><span class="muted en" style="text-align:right">Brand Launch Kit</span></span></li>
+      <li class="lvl-p1"><span class="k">G3</span><span class="t"><b>الشهر 6</b><span class="muted">الإنتاج المتقدم، واستبيان الميول</span></span></li>
+      <li class="lvl-p1"><span class="k">G4</span><span class="t"><b>الشهر 8</b><span class="muted">Integrated Campaign واختيار التخصص</span></span></li>
+      <li class="lvl-p2"><span class="k">G5</span><span class="t"><b>الشهر 10</b><span class="muted">الكفاءات التخصصية</span></span></li>
+      <li class="lvl-p2"><span class="k">G6</span><span class="t"><b>الشهر 12</b><span class="muted">مشروع العميل والوكالة</span></span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 24 AI POLICY DIVIDER -->
+<section class="slide" data-level="k" data-title="سياسة الذكاء الاصطناعي">
+  <div class="divider">
+    <div class="stack lg">
+      <span class="tag">سياسة الذكاء الاصطناعي</span>
+      <p class="d-title">نستخدم AI في الإنتاج، والطالب يفسّر عمله ويدافع عنه</p>
+      <ul class="olist one">
+        <li>يوثق الطالب الأدوات والموجّهات والمراجع والمخرجات الأولية والتعديلات البشرية وأسباب الاختيار وحقوق الاستخدام</li>
+        <li>تقييمات فردية محددة دون AI للتحقق من فهم التصميم والمونتاج والتسويق</li>
+        <li>حماية بيانات العملاء، وموافقة أصحاب الصور والأصوات، واحترام الملكية الفكرية</li>
+        <li>منع التضليل والانتحال</li>
+      </ul>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="سجل عمل AI: جدول الأدوات والموجهات والتعديلات البشرية والحقوق، مع صورة قبل وبعد التعديل">
+        <rect x="230" y="20" width="350" height="384" rx="8" class="fs st"/>
+        <text x="405" y="52" text-anchor="middle" font-size="17" class="fi disp">AI Work Log</text>
+        <rect x="246" y="68" width="318" height="26" rx="4" class="fp"/>
+        <text x="535" y="85" text-anchor="middle" font-size="10" class="fmu" direction="rtl">الأداة</text>
+        <text x="448" y="85" text-anchor="middle" font-size="10" class="fmu" direction="rtl">الموجّه</text>
+        <text x="350" y="85" text-anchor="middle" font-size="10" class="fmu" direction="rtl">التعديل البشري</text>
+        <text x="272" y="85" text-anchor="middle" font-size="10" class="fmu" direction="rtl">الحقوق</text>
+        <g id="logrows"></g>
+        <rect x="246" y="340" width="318" height="1" class="fl"/>
+        <text x="535" y="372" text-anchor="middle" font-size="10" class="fmu" direction="rtl">مراجعة المدرب</text>
+        <rect x="300" y="362" width="170" height="14" rx="7" class="tc"/>
+        <rect x="20" y="20" width="190" height="160" rx="6" class="tm"/>
+        <circle cx="90" cy="88" r="38" class="fm" opacity=".35"/><circle cx="130" cy="110" r="30" class="fy" opacity=".4"/><rect x="50" y="130" width="120" height="18" rx="9" class="fl"/>
+        <rect x="32" y="30" width="54" height="18" rx="9" class="fs"/><text x="59" y="43" text-anchor="middle" font-size="10" class="fmu" direction="rtl">مولَّد</text>
+        <path d="M115 192 V222" stroke="var(--muted)" stroke-width="2"/><path d="M107 214 L115 226 L123 214" class="nf" stroke="var(--muted)" stroke-width="2"/>
+        <rect x="20" y="236" width="190" height="168" rx="6" class="fi"/>
+        <circle cx="115" cy="300" r="40" class="fm"/><rect x="100" y="282" width="8" height="34" rx="4" class="fs"/><rect x="111" y="274" width="8" height="42" rx="4" class="fs"/><rect x="122" y="282" width="8" height="34" rx="4" class="fs"/>
+        <rect x="60" y="358" width="110" height="8" rx="4" class="fp" opacity=".6"/><rect x="80" y="372" width="70" height="6" rx="3" class="fp" opacity=".35"/>
+        <rect x="32" y="246" width="78" height="18" rx="9" class="fy"/><text x="71" y="259" text-anchor="middle" font-size="10" class="fi" direction="rtl">بعد التعديل</text>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>سجل عمل AI لكل مشروع</b></span><span>مثال توضيحي</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 25 TOOLS -->
+<section class="slide" data-level="k" data-title="الأدوات">
+  <header class="s-head"><span class="tag">الأدوات</span><h2>بيئة Adobe موحّدة، وأدوات AI تُضاف حسب المرحلة</h2><p>توفّر الأكاديمية تراخيص Adobe. تعلّم بيئة واحدة متكاملة يخفف العبء على المبتدئ، لأن الأدوات تتشارك الواجهة والمكتبات، وFirefly مدمج داخلها.</p></header>
+  <div class="s-body row3">
+    <div class="panel lvl-p0" style="background:var(--lv-tint)"><h3>P0</h3>
+      <span class="xs muted">أساسية</span><div class="chips"><span class="chip">Photoshop</span><span class="chip">Illustrator</span><span class="chip">Premiere Pro</span><span class="chip">Firefly</span><span class="chip">ChatGPT</span><span class="chip">Claude</span></div>
+      <span class="xs muted">مساندة</span><div class="chips"><span class="chip">Figma</span><span class="chip">CapCut</span></div></div>
+    <div class="panel lvl-p1" style="background:var(--lv-tint)"><h3>P1</h3>
+      <span class="xs muted">إنتاج</span><div class="chips"><span class="chip">After Effects</span><span class="chip">Figma</span><span class="chip">Runway</span><span class="chip">Kling</span><span class="chip">Veo</span><span class="chip">ElevenLabs</span></div>
+      <span class="xs muted">تسويق وتحليل</span><div class="chips"><span class="chip">Meta Ads</span><span class="chip">Google Ads</span><span class="chip">GA4</span><span class="chip">Looker Studio</span><span class="chip">n8n / Make</span></div></div>
+    <div class="panel lvl-p2" style="background:var(--lv-tint)"><h3>P2 حسب التخصص</h3>
+      <span class="xs muted">A</span><div class="chips"><span class="chip">Illustrator</span><span class="chip">Photoshop</span><span class="chip">Firefly</span><span class="chip">Figma</span></div>
+      <span class="xs muted">B</span><div class="chips"><span class="chip">Premiere Pro</span><span class="chip">After Effects</span><span class="chip">Runway</span><span class="chip">Kling</span><span class="chip">Veo</span><span class="chip">ElevenLabs</span></div>
+      <span class="xs muted">C</span><div class="chips"><span class="chip">Meta Ads</span><span class="chip">Google Ads</span><span class="chip">GA4</span><span class="chip">Looker Studio</span><span class="chip">CRM</span><span class="chip">n8n / Make</span></div></div>
+  </div>
+  <p class="note">القائمة مرنة بحسب التكلفة والإتاحة والتراخيص.</p>
+</section>
+
+<!-- 26 OPERATIONS DIVIDER -->
+<section class="slide" data-level="k" data-title="التشغيل والموارد">
+  <div class="divider">
+    <div class="stack lg">
+      <span class="tag">التشغيل والموارد</span>
+      <p class="d-title">بيئة إنتاج حقيقية من الفصل الثاني</p>
+      <ul class="olist one">
+        <li>مختبر حواسيب مناسب للتصميم والمونتاج، بشاشات وتخزين وإنترنت مستقر</li>
+        <li>استوديو تصوير صغير بإضاءة وخلفيات وحوامل وصوت</li>
+        <li>غرفة مراجعة وعروض</li>
+        <li>حسابات إعلانية تدريبية، وأرصدة AI، وتراخيص Adobe</li>
+      </ul>
+      <div class="stack"><span class="xs muted">الفريق التدريبي، ويمكن دمج الأدوار دون الاعتماد على مدرب واحد</span>
+        <div class="chips"><span class="chip ar">قائد أكاديمي</span><span class="chip ar">مدرب تصميم وهوية</span><span class="chip ar">مدرب فيديو</span><span class="chip ar">متخصص AI إبداعي</span><span class="chip ar">مدرب تسويق رقمي</span><span class="chip ar">متخصص إعلانات وتحليل</span><span class="chip ar">مدرب إنجليزية</span><span class="chip ar">مشرف استوديو</span><span class="chip ar">مرشد توظيف وأعمال</span></div></div>
+    </div>
+    <figure class="art">
+      <svg viewBox="0 0 600 420" role="img" aria-label="استوديو تصوير: خلفية، إضاءة، كاميرا على حامل، ومحطة مونتاج">
+        <rect x="170" y="30" width="260" height="250" class="ty"/>
+        <path d="M170 280 Q170 330 220 330 L380 330 Q430 330 430 280Z" class="ty"/>
+        <rect x="160" y="22" width="280" height="12" rx="6" class="fi"/>
+        <rect x="258" y="262" width="84" height="8" rx="2" class="fi"/><rect x="266" y="270" width="5" height="50" class="fi"/><rect x="329" y="270" width="5" height="50" class="fi"/>
+        <rect x="287" y="212" width="26" height="50" rx="7" class="fm"/><rect x="293" y="200" width="14" height="14" rx="3" class="fi"/>
+        <polygon points="50,90 140,70 140,180 50,160" class="fs st"/><polygon points="62,98 128,84 128,166 62,152" class="fp"/>
+        <path d="M95 175 V380 M95 380 L70 404 M95 380 L120 404 M95 380 V404" class="sk-i" stroke-width="3" fill="none"/>
+        <polygon points="550,90 460,70 460,180 550,160" class="fs st"/><polygon points="538,98 472,84 472,166 538,152" class="fp"/>
+        <path d="M505 175 V380 M505 380 L480 404 M505 380 L530 404 M505 380 V404" class="sk-i" stroke-width="3" fill="none"/>
+        <path d="M140 125 L250 236" stroke="var(--y)" stroke-width="1.5" stroke-dasharray="5 5"/><path d="M460 125 L350 236" stroke="var(--y)" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <rect x="272" y="336" width="56" height="34" rx="5" class="fi"/><circle cx="300" cy="353" r="11" class="fp"/><circle cx="300" cy="353" r="6" class="fc"/><rect x="310" y="330" width="14" height="8" rx="2" class="fi"/>
+        <path d="M300 370 V392 M300 392 L278 412 M300 392 L322 412" class="sk-i" stroke-width="3" fill="none"/>
+        <rect x="430" y="300" width="0" height="0"/>
+      </svg>
+      <figcaption><span>المخرج المتوقع: <b>استوديو TAQAT Creative Studio</b></span><span>تصوّر لتجهيز الاستوديو</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- 27 KPIs & DECISIONS -->
+<section class="slide" data-level="k" data-title="المؤشرات والقرارات">
+  <header class="s-head"><span class="tag">مؤشرات النجاح</span><h2>المستهدفات والقرارات قبل الإطلاق</h2></header>
+  <div class="s-body row2">
+    <table class="tablelite">
+      <thead><tr><th>المؤشر</th><th class="n">المستهدف المقترح</th></tr></thead>
+      <tbody>
+        <tr><td>إكمال البرنامج</td><td class="n"><b>85% فأكثر</b></td></tr>
+        <tr><td>اجتياز النهائي من المكمِلين</td><td class="n"><b>80% فأكثر</b></td></tr>
+        <tr><td>Portfolio احترافي لكل خريج</td><td class="n"><b>100%</b></td></tr>
+        <tr><td>مشروع عميل حقيقي لكل خريج</td><td class="n"><b>100%</b></td></tr>
+        <tr><td>تخصص موثّق لكل خريج</td><td class="n"><b>100%</b></td></tr>
+        <tr><td>متابعة الخريجين</td><td class="n"><b>6 أشهر</b></td></tr>
+      </tbody>
+    </table>
+    <div class="stack lg">
+      <div class="stack">
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">حد النجاح 80% مع آلية دعم</span><span class="check ok">معتمد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">تراخيص Adobe على الأكاديمية</span><span class="check ok">معتمد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">نموذج الإعلانات بأربع طبقات</span><span class="check ok">معتمد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">قيمة رصيد الإعلانات لكل طالب</span><span class="check wait">قيد التحديد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">مستوى الإنجليزية ومتطلبات TOEFL</span><span class="check wait">قيد التحديد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">سعة كل تخصص وتوافر المدربين</span><span class="check wait">قيد التحديد</span></div>
+        <div class="panel" style="flex-direction:row;align-items:center;justify-content:space-between"><span class="small">مستهدف التوظيف بعد دراسة طلب الشركات</span><span class="check wait">قيد التحديد</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 CLOSING -->
+<section class="slide" data-level="k" data-title="الختام">
+  <div class="cover">
+    <div class="stack lg">
+      <div class="brand">TAQAT ACADEMY</div>
+      <p class="d-title" style="font-size:4.4cqw">من موهبة إبداعية إلى وكالة تعمل</p>
+      <p class="sub">نقترح تشغيل TAQAT Creative Studio من الفصل الثاني لاستقبال المشاريع، ثم تحويله إلى بيئة إنتاج مهنية في الفصل الثالث. ندعو الشركاء إلى تزويد البرنامج بالعملاء والمشاريع الحقيقية.</p>
+      <p class="note">نسخة مقترحة للاعتماد الأكاديمي والتنفيذي، ولا تمثل اعتماداً رسمياً أو ضماناً للتوظيف.</p>
+    </div>
+    <div class="lvtiles">
+      <div class="lvtile lvl-p0"><span class="c">P0</span><div><b>علامة تجارية متكاملة</b><span>400 ساعة · 9 مقررات</span></div></div>
+      <div class="lvtile lvl-p1"><span class="c">P1</span><div><b>حملة مرتبطة بأهداف تجارية</b><span>400 ساعة · 9 مقررات</span></div></div>
+      <div class="lvtile lvl-p2"><span class="c">P2</span><div><b>تخصص ووكالة وعميل حقيقي</b><span>400 ساعة · 3 تخصصات</span></div></div>
+    </div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<nav class="controls" aria-label="التنقل بين الشرائح">
+  <button type="button" id="prev" aria-label="الشريحة السابقة"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  <div class="segs" id="segs"></div>
+  <span id="count">1 / 28</span>
+  <button type="button" id="next" aria-label="الشريحة التالية"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <button type="button" id="fs" aria-label="ملء الشاشة"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</nav>
+</div>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg';
+  function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+
+  // calendar cells (P1 art)
+  var cal=document.getElementById('cal');
+  if(cal){var fills=['tc','fl','tm','fl','ty','tc','fl','fc','fl','tm'];
+    for(var r=0;r<3;r++)for(var c=0;c<10;c++){var i=r*10+c;
+      el('rect',{x:314-c*29,y:316+r*31,width:24,height:24,rx:3,'class':(i%7===3?'fc':(i%5===1?'tm':(i%4===2?'ty':'fp')))},cal);}}
+
+  // waveform (track B art)
+  var wave=document.getElementById('wave');
+  if(wave){for(var x=110;x<572;x+=5){var h=6+Math.abs(Math.sin(x*.07)*14+Math.sin(x*.023)*8);
+    el('rect',{x:x,y:336-h/2,width:3,height:h,rx:1.5,'class':'fc',opacity:.85},wave);}}
+
+  // AI log rows
+  var rows=document.getElementById('logrows');
+  if(rows){var tools=['Firefly','Runway','Claude','ElevenLabs'];
+    tools.forEach(function(t,k){var y=104+k*56;
+      var tx=el('text',{x:535,y:y+18,'text-anchor':'middle','font-size':11,'class':'fi'},rows);tx.textContent=t;
+      el('rect',{x:410,y:y+6,width:76,height:6,rx:3,'class':'fl'},rows);el('rect',{x:420,y:y+18,width:66,height:6,rx:3,'class':'fl'},rows);
+      el('rect',{x:310,y:y+6,width:80,height:6,rx:3,'class':k%2?'tm':'tc'},rows);el('rect',{x:325,y:y+18,width:65,height:6,rx:3,'class':'fl'},rows);
+      el('circle',{cx:272,cy:y+15,r:8,'class':'fc'},rows);
+      el('path',{d:'M268 '+(y+15)+' l3 3 l5 -6',fill:'none',stroke:'var(--surface)','stroke-width':2},rows);
+      el('rect',{x:246,y:y+40,width:318,height:1,'class':'fl'},rows);});}
+
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length, cur=0;
+  var segs=document.getElementById('segs'), count=document.getElementById('count');
+
+  slides.forEach(function(s,i){
+    var m=document.createElement('div');m.className='marks';m.setAttribute('aria-hidden','true');m.innerHTML='<i></i><i></i><i></i><i></i>';s.appendChild(m);
+    var f=document.createElement('footer');f.className='s-foot';
+    f.innerHTML='<span class="who"><span class="cmyk" aria-hidden="true"><b></b><b></b><b></b><b></b></span><span>TAQAT Academy · AI Solo Creative Agency</span></span><span class="num">'+String(i+1).padStart(2,'0')+' / '+total+'</span>';
+    s.appendChild(f);
+    var b=document.createElement('button');b.type='button';b.dataset.l=s.dataset.level;b.title=s.dataset.title||('شريحة '+(i+1));b.setAttribute('aria-label',b.title);
+    b.addEventListener('click',function(){go(i)});segs.appendChild(b);
+  });
+
+  function stacked(){return window.matchMedia('(max-width: 820px)').matches}
+  function go(n){
+    n=Math.max(0,Math.min(total-1,n));
+    slides[cur].classList.remove('is-active');
+    cur=n; slides[cur].classList.add('is-active');
+    slides.forEach(function(s,i){ if(!stacked()) s.setAttribute('aria-hidden', i===cur?'false':'true'); else s.removeAttribute('aria-hidden'); });
+    [].forEach.call(segs.children,function(b,i){b.classList.toggle('on',i===cur)});
+    count.textContent=(cur+1)+' / '+total;
+    try{history.replaceState(null,'','#s'+(cur+1))}catch(e){}
+  }
+  document.getElementById('next').addEventListener('click',function(){go(cur+1)});
+  document.getElementById('prev').addEventListener('click',function(){go(cur-1)});
+  document.getElementById('fs').addEventListener('click',function(){
+    try{ if(!document.fullscreenElement){var p=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen(); if(p&&p.catch)p.catch(function(){});} else document.exitFullscreen(); }catch(e){}
+  });
+  document.addEventListener('keydown',function(e){
+    if(stacked())return;
+    var k=e.key;
+    if(k==='ArrowLeft'||k==='PageDown'||k===' '){e.preventDefault();go(cur+1)}
+    else if(k==='ArrowRight'||k==='PageUp'){e.preventDefault();go(cur-1)}
+    else if(k==='Home'){go(0)} else if(k==='End'){go(total-1)}
+  });
+  var sx=null;
+  document.getElementById('stage').addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
+  document.getElementById('stage').addEventListener('touchend',function(e){if(sx===null||stacked())return;var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(dx>0?cur+1:cur-1);sx=null});
+  function fromHash(){var m=/^#s(\d+)$/.exec(location.hash);if(m)go(parseInt(m[1],10)-1);else go(cur)}
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+</script>
+
+</body></html>
